@@ -5,6 +5,14 @@ import userController from "../controller/userController";
 
 const router = express.Router()
 
+// Test route
+
+router
+    .route('/test')
+    .get((req, res) => {
+        res.status(200).send('Hello World!')
+    })
+
 // Cards
 
 router

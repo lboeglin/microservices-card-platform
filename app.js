@@ -7,7 +7,7 @@ import swaggerJson from './swagger.json' with {type: 'json'};
 import dotenv from 'dotenv'
 dotenv.config()
 //api path
-const APIPATH = process.env.API_PATH || '/api/v0'
+const APIPATH = process.env.API_PATH
 
 const app = express()
 

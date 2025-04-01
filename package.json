@@ -2,8 +2,9 @@
   "name": "gacha_api",
   "version": "1.0.0",
   "description": "gacha_api",
-  "main": "server.js",
+  "main": "server.mjs",
   "scripts": {
+    "start": "node server.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,7 @@
     "express": "^5.1.0",
     "mongodb-memory-server": "^10.1.4",
     "mongoose": "^8.13.1",
+    "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"
   }
 }

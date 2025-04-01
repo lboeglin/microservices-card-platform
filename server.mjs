@@ -8,27 +8,27 @@ dotenv.config()
 import { mongoose } from 'mongoose';
 
 //port serveur http
-const serverPort = process.env.PORT || 8080
+const serverPort = process.env.PORT
 //mongodb url
-const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017'
+const mongoURL = process.env.MONGO_URL
 //mongodb db
-const mongoDB = process.env.MONGO_DB || 'tpDB'
+const mongoDB = process.env.MONGO_DB
 
 //environnement PROD ou DEV ou TEST
-const env = (new URL(import.meta.url)).searchParams.get('ENV') ||process.env.ENV || 'PROD'
+const env = (new URL(import.meta.url)).searchParams.get('ENV') || process.env.ENV || 'PROD'
 console.log(`env : ${env}`)
 
 //connexion à la BD
-if (env=='TEST') {
+if (env !== 'TEST') {
+    await mongoose.connect(mongoURL + '/' + mongoDB)
+    console.log("Mongo on " + mongoURL + '/' + mongoDB)
+} else {
     //en test le travail est en mémoire
-    const { MongoMemoryServer }  = await import('mongodb-memory-server')
+    const {MongoMemoryServer} = await import('mongodb-memory-server')
     const mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
     await mongoose.connect(uri)
-    console.log("Mongo on memory "+uri)
-} else {
-    await mongoose.connect(mongoURL + '/' + mongoDB)
-    console.log("Mongo on "+ mongoURL + '/' + mongoDB)
+    console.log("Mongo on memory " + uri)
 }
 //import de l'application
 
