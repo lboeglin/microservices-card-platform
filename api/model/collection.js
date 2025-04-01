@@ -1,19 +1,12 @@
 'use strict'
 
 export class Collection {
-    constructor() {
-        this.cardIds = []
+    constructor(collection) {
+        this.cards = collection ? collection.cards : []
     }
 
-    addCard(cardId) {
-        this.cardIds.push(cardId)
-    }
-
-    removeCard(cardId) {
-        this.cardIds = this.cardIds.filter(id => id !== cardId)
-    }
-
-    getCards() {
-        return this.cardIds
+    static fromJson(json) {
+        const cardIds = json.cards.map(card => card.id)
+        return new Collection({ cards: cardIds })
     }
 }

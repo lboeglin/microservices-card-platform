@@ -7,8 +7,9 @@ export class User {
         this.id = user.id
         this.name = user.name
         this.email = user.email
+        this.password = user.password
         this.image = user.image
-        this.collection = new Collection()
+        this.collection = new Collection(user.collection)
     }
 
     static fromJson(json) {
