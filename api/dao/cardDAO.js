@@ -41,14 +41,29 @@ const cardSchema = new mongoose.Schema({
     }
 })
 
-const Card = mongoose.model('Card', cardSchema)
+const CardDAO = mongoose.model('Card', cardSchema)
 
 const cardDao = {
     async getAllCards() {
         // TODO
     },
 
+    // return a random card
+    async getCard() {
+        // TODO
+    },
+
     async getCardById(cardId) {
+        // TODO
+    },
+
+    // return a random card of the type
+    async getCardByType(cardType) {
+        // TODO
+    },
+
+    // return all cards of the type
+    async getCardsByType(cardType) {
         // TODO
     },
 
@@ -64,3 +79,5 @@ const cardDao = {
         // TODO
     }
 }
+
+export default cardDao;
