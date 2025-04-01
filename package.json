@@ -1,0 +1,15 @@
+{
+  "name": "gacha_api",
+  "version": "1.0.0",
+  "description": "gacha_api",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.univ-nantes.fr/pub/but/but2/sae4/sae4_class_grp1_eq4_antunes-samuel_becqart-paul-emile_boeglin-lohan_chauvel-sacha_phan-theo"
+  },
+  "author": "Sacha Chauvel, Lohoan Boeglin, Samuel Antunes, Théo Phan, Paul-Emile Becquart",
+  "license": "ISC"
+}
