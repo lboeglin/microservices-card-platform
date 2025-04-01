@@ -11,5 +11,12 @@
     "url": "https://gitlab.univ-nantes.fr/pub/but/but2/sae4/sae4_class_grp1_eq4_antunes-samuel_becqart-paul-emile_boeglin-lohan_chauvel-sacha_phan-theo"
   },
   "author": "Sacha Chauvel, Lohoan Boeglin, Samuel Antunes, Théo Phan, Paul-Emile Becquart",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "mongodb-memory-server": "^10.1.4",
+    "mongoose": "^8.13.1",
+    "swagger-ui-express": "^5.0.1"
+  }
 }
