@@ -10,6 +10,28 @@ const userController = {
         return await userDAO.getUserById(id)
     },
 
+    register: async (req, res) => {
+        const { name, email, password } = req.body
+        const existingUser = await userDAO.getUserByEmail(email)
+
+        if (existingUser) {
+            return res.status(409).send({ message: 'User already exists' })
+        }
+
+        const newUser = {
+            name,
+            email,
+            password,
+            image: null,
+            coins: 10,
+            collection: [],
+            boosters: []
+        }
+
+        await userDAO.createUser(newUser)
+        return res.status(201).send({ message: 'User created successfully', user: newUser })
+    },
+
     login: async (req, res) => {
         const { email, password } = req.body
         const user = await userDAO.getUserByEmail(email)

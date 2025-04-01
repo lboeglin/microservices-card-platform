@@ -1,6 +1,7 @@
 'use strict'
 
 import { Collection } from './collection.js'
+import { BoosterInventory } from "./booster";
 
 export class User {
     constructor(user) {
@@ -9,7 +10,11 @@ export class User {
         this.email = user.email
         this.password = user.password
         this.image = user.image
+        this.coins = user.coins
+
+        // inventory (not sure if it is the right way to do it for the database)
         this.collection = new Collection(user.collection)
+        this.boosters = new BoosterInventory(user.boosters)
     }
 
     static fromJson(json) {

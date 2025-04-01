@@ -1,11 +1,11 @@
 'use strict'
 
-//pour lire le .env
-import dotenv from 'dotenv'
-dotenv.config()
 
-//import du client mongodb
-import { mongoose } from 'mongoose';
+import dotenv from 'dotenv'
+import mongoose from 'mongoose';
+
+//pour lire le .env
+dotenv.config()
 
 //port serveur http
 const serverPort = process.env.PORT
@@ -30,13 +30,14 @@ if (env !== 'TEST') {
     await mongoose.connect(uri)
     console.log("Mongo on memory " + uri)
 }
-//import de l'application
 
+
+//import de l'application
 const { default: app }  = await import ('./app.js')
 
 //lancement du serveur http
 const server = app.listen(serverPort, () =>
-    console.log(`Example app listening on port ${serverPort}`)
+    console.log(`app listening on port ${serverPort}`)
 )
 
 
