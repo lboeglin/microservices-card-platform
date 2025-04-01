@@ -1,0 +1,21 @@
+---
+import Card, { Rarity } from "../components/Card";
+import Layout from "../layouts/Layout.astro";
+import cat from "../../public/cat.jpg";
+import Container from "../layouts/Container.astro";
+---
+
+<Layout>
+	<Container>
+		<div class="flex flex-wrap gap-2">
+			<Card client:load rarity={Rarity.SUPER_RARE} artwork={cat.src} />
+			<Card client:load rarity={Rarity.SUPER_RARE} artwork={cat.src} />
+			<Card client:load rarity={Rarity.SUPER_RARE} artwork={cat.src} />
+			<Card client:load rarity={Rarity.RARE} artwork={cat.src} />
+			<Card client:load rarity={Rarity.COMMON} artwork={cat.src} />
+			<Card client:load rarity={Rarity.SUPER_RARE} artwork={cat.src} />
+			<Card client:load rarity={Rarity.SUPER_RARE} artwork={cat.src} />
+			<Card client:load rarity={Rarity.SUPER_RARE} artwork={cat.src} />
+		</div>
+	</Container>
+</Layout>
