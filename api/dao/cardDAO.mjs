@@ -53,6 +53,18 @@ const cardDao = {
         // TODO
     },
 
+    async addCard(cardData) {
+        // TODO
+    },
+
+    async updateCard(cardId, cardData) {
+        // TODO
+    },
+
+    async deleteCard(cardId) {
+        // TODO
+    },
+
     async getCardById(cardId) {
         // TODO
     },
@@ -64,18 +76,6 @@ const cardDao = {
 
     // return all cards of the type
     async getAllCardsWithFilter(cardType, cardRarityMin, cardRarityMax) {
-        // TODO
-    },
-
-    async addCard(cardData) {
-        // TODO
-    },
-
-    async updateCard(cardId, cardData) {
-         // TODO
-    },
-
-    async deleteCard(cardId) {
         // TODO
     }
 }
