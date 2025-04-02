@@ -1,5 +1,6 @@
 "use strict"
 import cardDAO from "../dao/cardDAO.mjs";
+import boosterDAO from "../dao/boosterDAO.mjs";
 
 const cardController = {
     getAll: async () => {
@@ -24,6 +25,10 @@ const cardController = {
             cards.push(cardDAO.getCardWithFilter(type, rarityMin, rarityMax))
         }
         return cards
+    },
+
+    getAvailableBooster: async () => {
+        return await boosterDAO.getAllAvailable()
     },
 
     getBooster: async (cardType) => {
