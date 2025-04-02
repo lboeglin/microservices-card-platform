@@ -1,6 +1,6 @@
 'use strict'
 
-export class Card {
+class Card {
     constructor (card) {
         // main properties
         this.id = card.id
@@ -14,20 +14,30 @@ export class Card {
         this.strenght = card.strenght
     }
 
-    static fromJson (json) {
-        return new Card(json)
+    static dealDamage(){
+        return this.strenght
     }
 
-    static generateCard(name, type, image) {
-        const rarityFactor = Math.floor((Math.random() * 4) + 1)
+    static takeDamage(damage){
+        this.health -= damage
+    }
 
-        return new Card({
-            name: name,
-            image: image,
-            rarity: rarityFactor,
-            type: type,
-            health: Math.floor(Math.random() * 10) + 1 + rarityFactor*2,
-            strenght: Math.floor(Math.random() * 10) + 1 + rarityFactor*2,
-        })
+    static resetLife(){
+        // TODO
     }
 }
+
+function generateCard(name, type, image) {
+    const rarityFactor = Math.floor((Math.random() * 4) + 1)
+
+    return new Card({
+        name: name,
+        image: image,
+        rarity: rarityFactor,
+        type: type,
+        health: Math.floor(Math.random() * 5) + 1 + rarityFactor*2,
+        strenght: Math.floor(Math.random() * 10) + 1 + rarityFactor*2,
+    })
+}
+
+export default Card
