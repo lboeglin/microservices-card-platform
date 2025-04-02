@@ -1,5 +1,5 @@
 'use strict'
-import userDAO from "../dao/userDAO.js";
+import userDAO from "../dao/userDAO.mjs";
 
 const userController = {
     getAll: async () => {

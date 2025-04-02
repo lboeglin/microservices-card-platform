@@ -33,11 +33,11 @@ if (env !== 'TEST') {
 
 
 //import de l'application
-const { default: app }  = await import ('./app.js')
+const { default: app }  = await import ('./app.mjs')
 
 //lancement du serveur http
 const server = app.listen(serverPort, () =>
-    console.log(`app listening on port ${serverPort}`)
+    console.log(`app listening on port ${serverPort}\nAPI is running on http://127.0.0.1:3000/api/`)
 )
 
 

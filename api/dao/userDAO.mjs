@@ -1,7 +1,7 @@
 'use strict'
 
 import { mongoose } from 'mongoose';
-import { User } from '../model/user.js'
+import { User } from '../model/user.mjs'
 
 const userSchema = new mongoose.Schema({
     id: {

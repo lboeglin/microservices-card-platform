@@ -1,7 +1,7 @@
 'use strict'
 
-import { Collection } from './collection.js'
-import { BoosterInventory } from "./booster";
+import { Collection } from './collection.mjs'
+import { BoosterInventory } from "./booster.mjs";
 
 export class User {
     constructor(user) {

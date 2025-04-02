@@ -1,5 +1,5 @@
 "use strict"
-import cardDAO from "../dao/cardDAO.js";
+import cardDAO from "../dao/cardDAO.mjs";
 
 const cardController = {
     getAll: async () => {

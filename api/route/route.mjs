@@ -1,7 +1,7 @@
 "use strict"
 import express from 'express'
-import cardController from "../controller/cardController";
-import userController from "../controller/userController";
+import cardController from "../controller/cardController.mjs";
+import userController from "../controller/userController.mjs";
 
 const router = express.Router()
 

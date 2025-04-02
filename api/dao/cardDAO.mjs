@@ -1,5 +1,5 @@
 import { mongoose } from 'mongoose';
-import { Card } from "../model/card";
+import { Card } from "../model/card.mjs";
 
 const cardSchema = new mongoose.Schema({
     cardId: {
