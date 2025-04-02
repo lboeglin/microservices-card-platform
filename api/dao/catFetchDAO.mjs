@@ -39,8 +39,28 @@ const catFetchDAO = {
             console.error("Error fetching images:", error);
             return [];
         }
+    },
+    findX: async (x) => {
+        try {
+            const url = new URL(urlBase);
+            url.searchParams.append("limit", x);
+            url.searchParams.append("api_key", apiKey);
+            
+            const response = agent 
+                ? await fetch(url.toString(), { agent }) 
+                : await fetch(url.toString());
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            return json;
+        } catch (error) {
+            console.error("Error fetching images:", error);
+            return [];
+        }
     }
 };
 
 export default catFetchDAO;
-
