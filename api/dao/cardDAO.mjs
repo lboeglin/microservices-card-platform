@@ -15,19 +15,11 @@ const cardSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-    , link: {
-        type: String,
-        required: true
-    }
     , rarity: {
         type: Number,
         required: true
     }
     , type: {
-        type: String,
-        required: true
-    }
-    , modifier: {
         type: String,
         required: true
     }
@@ -54,7 +46,7 @@ const cardDao = {
     },
 
     async addCard(cardData) {
-        // TODO
+        // TODO, make sure the db create an id
     },
 
     async updateCard(cardId, cardData) {

@@ -10,7 +10,6 @@ export class Card {
         // gacha properties
         this.rarity = card.rarity
         this.type = card.type // cat, neko, criminal, etc.
-        this.modifier = card.modifier // ex: foil, alternate, etc.
         this.health = card.health
         this.strenght = card.strenght
     }
@@ -19,4 +18,16 @@ export class Card {
         return new Card(json)
     }
 
+    static generateCard(name, type, image) {
+        const rarityFactor = Math.floor((Math.random() * 4) + 1)
+
+        return new Card({
+            name: name,
+            image: image,
+            rarity: rarityFactor,
+            type: type,
+            health: Math.floor(Math.random() * 10) + 1 + rarityFactor*2,
+            strenght: Math.floor(Math.random() * 10) + 1 + rarityFactor*2,
+        })
+    }
 }
