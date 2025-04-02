@@ -57,13 +57,13 @@ const cardDao = {
         // TODO
     },
 
-    // return a random card of the type
-    async getCardByType(cardType) {
+    // return a random card matching the filters
+    async getCardWithFilter(cardType, cardRarityMin, cardRarityMax) {
         // TODO
     },
 
     // return all cards of the type
-    async getCardsByType(cardType) {
+    async getAllCardsWithFilter(cardType, cardRarityMin, cardRarityMax) {
         // TODO
     },
 

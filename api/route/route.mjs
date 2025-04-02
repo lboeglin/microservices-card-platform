@@ -62,7 +62,7 @@ router
 router
     .route('/:userId/openBooster/:type')
     .post(async (req, res) =>{
-        // check if userId is valid (not realy safe if someone manages to get your userId)
+        // check if userId is valid (not really safe if someone manages to get your userId)
         const userId = parseFloat(req.params.userId)
         const user = await userController.getFromId(userId)
         if (!user) {
@@ -71,10 +71,30 @@ router
         }
 
         if (!req.params.type) {
-            const data = await cardController.getXRandom(6)
+            const data = await cardController.getBooster(6, "")
             res.status(201).send(data)
         } else {
-            const data = await cardController.getXRandomByType(6, req.params.type)
+            const data = await cardController.getBooster(6, req.params.type)
+            res.status(201).send(data)
+        }
+    })
+
+router
+    .route('/:userId/openSpecialBooster/:type')
+    .post(async (req, res) =>{
+        // check if userId is valid (not really safe if someone manages to get your userId)
+        const userId = parseFloat(req.params.userId)
+        const user = await userController.getFromId(userId)
+        if (!user) {
+            res.status(404).send('User not found')
+            return
+        }
+
+        if (!req.params.type) {
+            const data = await cardController.getSpecialBooster(6, "")
+            res.status(201).send(data)
+        } else {
+            const data = await cardController.getSpecialBooster(6, req.params.type)
             res.status(201).send(data)
         }
     })
