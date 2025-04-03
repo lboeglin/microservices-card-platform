@@ -12,12 +12,9 @@ router.use('/booster', boosterRoutes)
 
 // Test route
 router
-    .route('/test')
+    .route('/')
     .get((req, res) => {
-        res.status(200).send('Hello World!')
+        res.status(200).send('THE GACHA API IS ONLINE')
     })
-
-
-
 
 export default router
