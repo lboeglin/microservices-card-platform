@@ -26,7 +26,7 @@ app.use(express.json())
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerJson))
 
 //chargement des routes
-const {default: routes}  = await import ('./api/route/route.mjs')
+const {default: routes}  = await import ('./api/route/routes.mjs')
 app.use(APIPATH+'/',routes)
 
 //message par defaut

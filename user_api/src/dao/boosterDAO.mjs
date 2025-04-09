@@ -33,23 +33,8 @@ const boosterSchema = new mongoose.Schema({
 const BoosterDAO = mongoose.model('Booster', boosterSchema)
 
 const boosterDao = {
-    async getAllBoosters() {
-        // TODO
-    },
 
     async getBooster(boosterId) {
-        // TODO
-    },
-
-    async addBooster(boosterData) {
-        // TODO
-    },
-
-    async updateBooster(boosterId, boosterData) {
-        // TODO
-    },
-
-    async deleteBooster(boosterId) {
         // TODO
     },
 

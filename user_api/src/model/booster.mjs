@@ -9,19 +9,4 @@ export class Booster {
         this.image = booster.image
         this.isAvailable = booster.isAvailable
     }
-
-    static fromJson(json) {
-        return new Booster(json)
-    }
-}
-
-export class BoosterInventory {
-    constructor(boosterInventory) {
-        this.boosters = boosterInventory.boosters
-        this.coins = boosterInventory.coins
-    }
-
-    static fromJson(json) {
-        return new BoosterInventory(json)
-    }
 }
