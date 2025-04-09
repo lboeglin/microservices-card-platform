@@ -1,31 +1,6 @@
 'use strict'
 
-class CardException extends Error {
-    constructor (message) {
-        super(message)
-        this.name = "CardException"
-    }
-}
-
-const requiredProperties = new Map([
-    "id",
-    "name",
-    "image",
-    "rarity",
-    "type",
-    "health",
-    "strenght"
-])
-
-class Card {
-    id
-    name
-    image
-    rarity
-    type
-    health
-    strenght
-
+export class Card {
     constructor (card) {
         // main properties
         this.id = card.id
@@ -35,13 +10,36 @@ class Card {
         // gacha properties
         this.rarity = card.rarity
         this.type = card.type // cat, neko, criminal, etc.
-        this.modifier = card.modifier // ex: foil, alternate, etc.
         this.health = card.health
         this.strenght = card.strenght
-
-        
     }
 
+    static dealDamage(){
+        return this.strenght
+    }
+
+    static takeDamage(damage){
+        this.health -= damage
+    }
+
+    static resetLife(){
+        // TODO
+    }
+}
+
+function generateCard(name, type, image) {
+    const rarityFactor = Math.floor((Math.random() * 4) + 1)
+
+    return new Card({
+        name: name,
+        image: image,
+        rarity: rarityFactor,
+        type: type,
+        health: Math.floor(Math.random() * 5) + 1 + rarityFactor*2,
+        strenght: Math.floor(Math.random() * 10) + 1 + rarityFactor*2,
+    })
 }
 
 export default Card
+
+        

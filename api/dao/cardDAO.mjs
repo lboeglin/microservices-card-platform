@@ -1,5 +1,6 @@
 import { mongoose } from 'mongoose';
 import { Card } from "../model/card.mjs";
+import catFetchDAO from "./catFetchDAO.mjs";
 
 const cardSchema = new mongoose.Schema({
     cardId: {
@@ -15,19 +16,11 @@ const cardSchema = new mongoose.Schema({
         type: String,
         required: true
     }
-    , link: {
-        type: String,
-        required: true
-    }
     , rarity: {
         type: Number,
         required: true
     }
     , type: {
-        type: String,
-        required: true
-    }
-    , modifier: {
         type: String,
         required: true
     }
@@ -41,7 +34,7 @@ const cardSchema = new mongoose.Schema({
     }
 })
 
-const CardDAO = mongoose.model('Card', cardSchema)
+const cardModel = mongoose.model('Card', cardSchema)
 
 const cardDao = {
     async getAllCards() {
@@ -53,8 +46,24 @@ const cardDao = {
         // TODO
     },
 
-    async addCard(cardData) {
-        // TODO
+    async addCard(name, type, image) {
+        // TODO, make sure the db create an id for the card
+        const resFetch = catFetchDAO.findOne()
+        const rarityFactor = Math.floor((Math.random() * 4) + 1)
+
+        const newCard = {
+            name: name,
+            image: resFetch.image,
+            rarity: rarityFactor,
+            type: "cat",
+            health: Math.floor(Math.random() * 5) + 1 + rarityFactor*2,
+            strenght: Math.floor(Math.random() * 10) + 1 + rarityFactor*2,
+        }
+
+        await cardModel.insertOne(newCard)
+
+
+        return cardDao.findOne() // TODO OSKOOR
     },
 
     async updateCard(cardId, cardData) {
