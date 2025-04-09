@@ -1,6 +1,31 @@
 'use strict'
 
-export class Card {
+class CardException extends Error {
+    constructor (message) {
+        super(message)
+        this.name = "CardException"
+    }
+}
+
+const requiredProperties = new Map([
+    "id",
+    "name",
+    "image",
+    "rarity",
+    "type",
+    "health",
+    "strenght"
+])
+
+class Card {
+    id
+    name
+    image
+    rarity
+    type
+    health
+    strenght
+
     constructor (card) {
         // main properties
         this.id = card.id
@@ -13,10 +38,10 @@ export class Card {
         this.modifier = card.modifier // ex: foil, alternate, etc.
         this.health = card.health
         this.strenght = card.strenght
-    }
 
-    static fromJson (json) {
-        return new Card(json)
+        
     }
 
 }
+
+export default Card

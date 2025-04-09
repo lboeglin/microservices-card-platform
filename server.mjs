@@ -1,6 +1,5 @@
 'use strict'
 
-
 import dotenv from 'dotenv'
 import mongoose from 'mongoose';
 
