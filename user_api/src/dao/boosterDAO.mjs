@@ -1,6 +1,7 @@
 'use strict'
 
 import mongoose from 'mongoose'
+import { Booster } from '../model/booster.mjs'
 
 const boosterSchema = new mongoose.Schema({
     boosterId: {
@@ -30,17 +31,27 @@ const boosterSchema = new mongoose.Schema({
     },
 })
 
-const BoosterDAO = mongoose.model('Booster', boosterSchema)
+const projection = { _id: 0, __v:0}
+
+const MongoBooster = mongoose.model('Booster', boosterSchema)
+
+// TODO : make an adapter ?
 
 const boosterDao = {
 
+    // TODO : do we have an id for the boosters or not ?
     async getBooster(boosterId) {
-        // TODO
+        try {
+            const booster = await MongoBooster.find({id : boosterId}, projection)
+            return booster ? booster : null
+        } catch(e) {
+            throw e
+        }
     },
 
     async getAllAvailable() {
         try {
-            return await BoosterDAO.find({isAvailable: true})
+            return await MongoBooster.find({isAvailable: true})
         } catch (error) {
             console.error('Error fetching available boosters:', error)
             throw error

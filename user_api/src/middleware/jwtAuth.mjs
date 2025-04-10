@@ -3,30 +3,50 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-const TOKEN_SECRET = process.env.TOKEN_SECRET
-const TOKEN_EXPIRATION = '1h'
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET
+const ACCESS_TOKEN_EXPIRATION = '1h'
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET
+const REFRESH_TOKEN_EXPIRATION = '7d'
 
-export function generateToken(payload) {
-    return jwt.sign(payload, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRATION })
+export function generateAccessToken(payload) {
+    return jwt.sign(payload, ACCESS_TOKEN_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRATION })
 }
 
-export function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
+export function generateRefreshToken(payload) {
+    return jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_TOKEN_EXPIRATION })
+}
+
+export function authenticateRefreshToken(req, res, next) {
+    const refreshToken = req.body.refreshToken || req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(401).json({ message: 'Refresh token is required' });
+    }
+
+    jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (error, decoded) => {
+        if (error) {
+            return res.status(403).json({ message: 'Invalid or expired refresh token' });
+        }
+
+        const newAccessToken = generateAccessToken({ name: decoded.name });
+
+        const newRefreshToken = generateRefreshToken({ name: decoded.name });
+
+        req.user = decoded
+        next()
+    })
+}
+
+export function extractNameFromToken(req) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
         return res.status(401).json({ message: 'Token missing' })
     }
-
-    try {
-        const payload = jwt.verify(token, TOKEN_SECRET)
-
-        const newToken = generateToken({ id: payload.id, username: payload.username })
-        res.setHeader('Authorization', `Bearer ${newToken}`)
-
-        req.user = payload
-        next()
-    } catch (err) {
-        return res.status(403).json({ message: 'Invalid or expired token' })
+    const decoded = jwt.decode(token)
+    if (!decoded?.name) {
+        return res.status(400).json({ message: 'Invalid token content' })
     }
+    return decoded.name
 }

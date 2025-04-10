@@ -1,50 +1,55 @@
 'use strict'
-import userDAO from "../dao/userDAO.mjs";
+
+import userDAO from "../dao/userDAO.mjs"
+import { hashPassword } from "../utils/hashing.mjs" 
 
 const userController = {
-    getAll: async () => {
-        return await userDAO.getAllUsers()
-    },
-
-    getFromId: async (id) => {
-        return await userDAO.getUserById(id)
-    },
-
-    register: async (req, res) => {
-        const { name, email, password } = req.body
-        const existingUser = await userDAO.getUserByEmail(email)
-
-        if (existingUser) {
-            return res.status(409).send({ message: 'User already exists' })
+    loginUser: async (username, password) => {
+        const user = await userDAO.getUserByName(username)
+        if (!user) {
+            return null
         }
 
+        const correct = await userDAO.verifyPassword(user.password, password, user.salt)
+        return correct ? user : null
+    },
+
+    register: async ({ username, password }) => {
+        const user = await userDAO.getUserByName(username)
+        if (user) {
+            return null 
+        }
+
+        const salt = crypto.randomBytes(128).toString('base64')
+        const hashedPassword = await hashPassword(password, salt)
+
         const newUser = {
-            name,
-            email,
-            password,
-            image: null,
-            coins: 10,
-            collection: [],
-            boosters: []
+            name: username,
+            password: hashedPassword,
+            salt: salt,
+            coins: 10,           
+            collection: []
         }
 
         await userDAO.createUser(newUser)
-        return res.status(201).send({ message: 'User created successfully', user: newUser })
+        return newUser
     },
 
-    login: async (req, res) => {
-        const { email, password } = req.body
-        const user = await userDAO.getUserByEmail(email)
+    getUserByName: async (name) => {
+        return await userDAO.getUserByName(name)
+    },
 
-        if (!user) {
-            return res.status(404).send({ message: 'User not found' })
-        }
+    deleteUser: async (name) => {
+        return await userDAO.deleteUserByName(name)
+    },
 
-        if (user.password !== password) {
-            return res.status(401).send({ message: 'Invalid password' })
-        }
+    getCollection: async (name) => {
+        const user = await userDAO.getUserByName(name)
+        return user ? user.collection : [] 
+    },
 
-        return res.status(200).send({ message: 'Login successful', user })
+    sellCard: async (username, cardId) => {
+        return await userDAO.sellCard({ userName: username, cardId: cardId })
     }
 }
 
