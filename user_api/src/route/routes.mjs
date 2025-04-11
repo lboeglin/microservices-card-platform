@@ -2,7 +2,6 @@
 
 import express from 'express'
 import userController from "../controller/userController.mjs";
-import boosterController from "../controller.boosterController.mjs"
 import {
     extractNameFromToken,
     authenticateRefreshToken,
@@ -22,11 +21,11 @@ router
             if (!user) {
                 return res.status(401).send({ message: "Invalid credentials" })
             }
-            const accessToken = generateAccessToken({ name: user.name })
-            const refreshToken = generateRefreshToken({ name: user.name })
+            const accessToken = req.newAccessToken
+            const refreshToken = req.newRefreshToken
             res.status(200).json({ accessToken, refreshToken })
         } catch (error) {
-            res.status(500).send({ message: error.message })
+            res.status(500).send({ message: error })
         }
     })
 
@@ -45,7 +44,7 @@ router
             }
             res.status(409).send({ message: "Username already taken" })
         } catch (error) {
-            res.status(500).send({ message: error.message })
+            res.status(500).send({ message: error })
         }
     })
 
@@ -53,15 +52,20 @@ router
 router
     .route('/user/refresh-tokens')
     .post(authenticateRefreshToken, async (req, res) => {
-        const newAccessToken = generateAccessToken({ name: req.user.name });
-        const newRefreshToken = generateRefreshToken({ name: req.user.name });
+        try {
 
-        res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+            const newAccessToken = generateAccessToken({ name: req.user.name });
+            const newRefreshToken = generateRefreshToken({ name: req.user.name });
+            
+            res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+        } catch (error) {
+            res.status(500).send({ message: error })
+        }
     })
 
 // Get info from user (not sure if need cuz only send back collection and boosters)
 // DELETE a user from it's name (not sure if need password to delete cuz annoying when we can just make a r u sure button)
-// UPDATE username/password (not sure if we make a separate route)
+// UPDATE a user name (send back user info)
 router
     .route('/user')
     .get(async (req, res) => {
@@ -73,7 +77,7 @@ router
             }
             res.status(404).send({ message: "User not found" })
         } catch (error) {
-            res.status(500).send({ message: error.message })
+            res.status(500).send({ message: error })
         }
     })
     .delete(async (req, res) => {
@@ -85,14 +89,45 @@ router
             }
             res.status(400).send({ message: "Failed to delete user" })
         } catch (error) {
-            res.status(500).send({ message: error.message })
+            res.status(500).send({ message: error })
         }
     })
     .put(async (req, res) => {
         try {
-
+            const name = extractNameFromToken(req)
+            const {newName} = req.body
+            if (!newName || newName.trim() === "") {
+                return res.status(400).send({message: "A new valide name is required"})
+            }
+            const user = await userController.getUserByName(newName)
+            if (user != null) {
+                return res.status(409).send({ message: "UUsername already taken"})
+            }
+            const newUser = await userController.updateName(name, newName)
+            if (newUser) {
+                return res.status(200).send(newUser)
+            }
+            res.status(400).send({ message: "Failed to update name" })
         } catch (error) {
-            res.status(500).send({ message: error.message })
+            res.status(500).send({ message: error })
+        }
+    })
+
+// Update user password
+router
+    .route('/user/password')
+    .put(async (req, res) => {
+        try {
+            const name = extractNameFromToken(req)
+            const { currentPassword, newPassword } = req.body
+            
+            const result = await userController.updatePassword(name, currentPassword, newPassword)
+            if (result) {
+                return res.status(200).send({ message: "Password updated" })
+            }
+            res.status(400).send({ message: "Failed to update password" })
+        } catch (error) {
+            res.status(500).send({ message: error })
         }
     })
 
@@ -108,7 +143,7 @@ router
             }
             res.status(404).send({ message: "Collection not found" })
         } catch (error) {
-            res.status(500).send({ message: error.message })
+            res.status(500).send({ message: error })
         }
     })
 
@@ -125,40 +160,69 @@ router
             }
             res.status(400).send({ message: "Could not sell card" })
         } catch (error) {
-            res.status(500).send({ message: error.message })
+            res.status(500).send({ message: error })
         }
     })
 
-// Called when going to gacha page (on client side so not sure if this function should be here)
+// Called when going to gacha page (on client side so not sure if this function should be here) 
+// Return number of free booster
 router
-    .route('/booster/claim-booster')
+    .route('/booster')
     .post(async (req, res) => {
         try {
             const name = extractNameFromToken(req)
             const user = await userController.getUserByName(name)
             if (!user) {
-                return res.status(404).send({ message: 'User not found' })
+                return res.status(404).send({ message: "User not found" })
             }
-
-            const lastBooster = user.boosters // TODO : logic to get the latest one
-
+            const boosters = user.boosters
+            
+            let lastBooster = null
+            if (boosters.length == 2) {
+                lastBooster =  Math.min(...boosters)
+            } else if (boosters.length == 1) {
+                lastBooster = boosters[0]
+            } else {
+                lastBooster = user.lastBooster
+            }
+        
             const currentTime = Date.now()
             const twelveHours = 12 * 60 * 60 * 1000
 
             if (lastBooster) {
                 const timeDifference = currentTime - lastBooster
-                if (timeDifference < twelveHours) {
-                    const remainingTime = twelveHours - timeDifference
-                    return res.status(400).send({message : "Need to wait x time"}) // Use remaining time
+                let numberOfBooster = boosters.length
+                if (timeDifference >= twelveHours) {
+                    numberOfBooster = await userController.claimBooster(name, currentTime)
                 }
+                return res.status(200).send(numberOfBooster)
             }
-
-            await userController.addBooster({name,currentTime})
-
-            return res.status(200).send({ message: 'Free booster claimed successfully' })
+            
+            return res.status(400).send({ message: "Failed to check boosters available" }) 
 
         } catch (error) {
-            res.status(500).send({ message: error.message })
+            res.status(500).send({ message: error })
+        }
+    })
+
+// Add an array of cards to collection
+router
+    .route("/addCard")
+    .put(async (req, res) => {
+        try {
+            const name = extractNameFromToken(req)
+            const user = await userController.getUserByName(name)
+            if (!user) {
+                return res.status(400).send({ message: "User not found" })
+            }
+            const {cards} = req.body
+            const result = await userController.addCards(name, cards)
+            if (result) {
+                return res.status(200).send({ message: "Cards added" })
+            }
+            res.status(400).send({ message: "Could not add cards" })
+        } catch (error) {
+            res.status(500).send({ message: error })
         }
     })
 

@@ -17,20 +17,22 @@ export function generateRefreshToken(payload) {
 }
 
 export function authenticateRefreshToken(req, res, next) {
-    const refreshToken = req.body.refreshToken || req.cookies.refreshToken;
+    const refreshToken = req.body.refreshToken || req.cookies.refreshToken
 
     if (!refreshToken) {
-        return res.status(401).json({ message: 'Refresh token is required' });
+        return res.status(401).json({ message: 'Refresh token is required' })
     }
 
     jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (error, decoded) => {
         if (error) {
-            return res.status(403).json({ message: 'Invalid or expired refresh token' });
+            return res.status(403).json({ message: 'Invalid or expired refresh token' })
         }
 
-        const newAccessToken = generateAccessToken({ name: decoded.name });
+        const newAccessToken = generateAccessToken({ name: decoded.name })
+        const newRefreshToken = generateRefreshToken({ name: decoded.name })
 
-        const newRefreshToken = generateRefreshToken({ name: decoded.name });
+        req.newAccessToken = newAccessToken
+        req.newRefreshToken = newRefreshToken
 
         req.user = decoded
         next()

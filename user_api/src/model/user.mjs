@@ -21,8 +21,10 @@ class UserException extends Error {
 const attributsNamesAndTypes = new Map([
     ['name', 'string'],
     ['password', 'string'],
+    ['salt', 'string'],
     ['coins', 'number'],
-    ['collection', 'object']
+    ['collection', 'object'],
+    ['boosters', 'object']
 ])
 
 /**
@@ -44,6 +46,12 @@ class User {
     password
 
     /**
+     * The user's salt for the password
+     * @type {string}
+     */
+    salt
+
+    /**
      * The user's available coins.
      * @type {number}
      */
@@ -55,6 +63,18 @@ class User {
      */
     collection
 
+    /** 
+     * The user's last free booster timestamps inventory.
+     * @type {Array<number>} 
+     */
+    boosters
+
+    /**
+     * The user's last free booster opened timestamp.
+     * @type {Number}
+     */
+    lastBooster
+
     /**
      * Creates an instance of the User class.
      * Validates the properties and assigns them to the instance.
@@ -62,8 +82,11 @@ class User {
      * @param {Object} obj - An object representing the user with the following properties:
      * @param {string} obj.name - The user's name.
      * @param {string} obj.password - The user's password.
+     * @param {string} obj.salt - The user's salt.
      * @param {number} [obj.coins=0] - The user's available coins. Defaults to 0 if not provided.
      * @param {Array<string>} [obj.collection=[]] - The user's collection of card IDs. Defaults to an empty array if not provided.
+     * @param {Array<number>} [obj.boosters=[]] - The user's available free boosters. Defaults to an empty array.
+     * @param {number} obj.lastBooster - The user's timestamp of the latest free booster opened.
      * 
      * @throws {UserException} If any of the following conditions are not met:
      * - `name` is missing.
@@ -75,8 +98,10 @@ class User {
     constructor(obj) {
 
         // Default values
-        obj.coins = obj.coins !== undefined ? obj.coins : 0
+        obj.coins = obj.coins !== undefined ? obj.coins : 10
         obj.collection = obj.collection !== undefined ? obj.collection : []
+        obj.boosters = obj.boosters !== undefined ? obj.boosters : []
+        obj.lastBooster = obj.lastBooster !== undefined ? obj.lastBooster : Date.now()
 
         // Validate data types
         const objNamesAndTypes = new Map(Object.entries(obj).map(([key, value]) => 
@@ -97,12 +122,24 @@ class User {
             throw new UserException('Password is required')
         }
 
+        if (obj.salt.trim() === '') {
+            throw new UserException('Salt is required')
+        }
+
         if (isNaN(obj.coins)|| obj.coins < 0) {
             throw new UserException('Coins must be a valid positive number');
         }
 
         if (obj.collection.some((cardId) => typeof cardId !== 'string')) {
             throw new UserException('Collection must be an array of card IDs')
+        }
+
+        if (obj.boosters.length > 2) {
+            throw new UserException('Boosters array must contain at most 2 timestamps')
+        }
+
+        if (isNaN(obj.lastBooster)|| obj.lastBooster < 0) {
+            throw new UserException('Timestamp must be a valid positive number');
         }
 
         // Assign properties to the instance
