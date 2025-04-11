@@ -6,7 +6,7 @@ const serverPort = process.env.PORT
 const APIPATH = process.env.API_PATH
 
 const outputFile = './swagger.json';
-const endpointsFiles = ['./api/route/*.mjs'];
+const endpointsFiles = ['./src/route/routes.mjs'];
 
 const config = {
     info: {
