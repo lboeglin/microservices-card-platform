@@ -24,7 +24,8 @@ const attributsNamesAndTypes = new Map([
     ['salt', 'string'],
     ['coins', 'number'],
     ['collection', 'object'],
-    ['boosters', 'object']
+    ['boosters', 'object'],
+    ['lastBooster', 'number'],
 ])
 
 /**
@@ -58,8 +59,8 @@ class User {
     coins
 
     /**
-     * The user's collection of card IDs.
-     * @type {Array<string>}
+     * The user's collection of card IDs (now array of numbers).
+     * @type {Array<number>}
      */
     collection
 
@@ -84,7 +85,7 @@ class User {
      * @param {string} obj.password - The user's password.
      * @param {string} obj.salt - The user's salt.
      * @param {number} [obj.coins=0] - The user's available coins. Defaults to 0 if not provided.
-     * @param {Array<string>} [obj.collection=[]] - The user's collection of card IDs. Defaults to an empty array if not provided.
+     * @param {Array<number>} [obj.collection=[]] - The user's collection of card IDs. Defaults to an empty array if not provided.
      * @param {Array<number>} [obj.boosters=[]] - The user's available free boosters. Defaults to an empty array.
      * @param {number} obj.lastBooster - The user's timestamp of the latest free booster opened.
      * 
@@ -92,7 +93,7 @@ class User {
      * - `name` is missing.
      * - `password` is missing.
      * - `coins` is negative.
-     * - `collection` is not an array of strings.
+     * - `collection` is not an array of numbers.
      * - The data types of `obj` attributes don't match the expected types.
      */
     constructor(obj) {
@@ -102,6 +103,10 @@ class User {
         obj.collection = obj.collection !== undefined ? obj.collection : []
         obj.boosters = obj.boosters !== undefined ? obj.boosters : []
         obj.lastBooster = obj.lastBooster !== undefined ? obj.lastBooster : Date.now()
+
+        // Default values to hide protected values
+        obj.password = obj.password !== undefined ? obj.password : "XXXXXXXXXX"
+        obj.salt = obj.salt !== undefined ? obj.salt : "XXXXXXXXX"
 
         // Validate data types
         const objNamesAndTypes = new Map(Object.entries(obj).map(([key, value]) => 
@@ -130,8 +135,8 @@ class User {
             throw new UserException('Coins must be a valid positive number');
         }
 
-        if (obj.collection.some((cardId) => typeof cardId !== 'string')) {
-            throw new UserException('Collection must be an array of card IDs')
+        if (obj.collection.some((cardId) => typeof cardId !== 'number')) {
+            throw new UserException('Collection must be an array of numbers')
         }
 
         if (obj.boosters.length > 2) {
@@ -148,4 +153,3 @@ class User {
 }
 
 export default User
-

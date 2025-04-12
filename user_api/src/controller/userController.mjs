@@ -8,11 +8,11 @@ const userController = {
     },
 
     register: async (name, password) => {
-        return await userDAO.createUser({ name, password }) 
+        return await userDAO.createUser(name, password) 
     },
 
     loginUser: async (name, password) => {
-        return await userDAO.verifyPassword({ name, password })
+        return await userDAO.loginUser(name, password)
     },
 
     deleteUser: async (name) => {
@@ -37,7 +37,7 @@ const userController = {
     },
 
     addCards: async (name, cards) => {
-        return await userDAO.addCardsToCollection(name, cards)
+        return await userDAO.addCards(name, cards)
     },
 
     claimBooster: async (name, currentTime) => {
@@ -46,6 +46,10 @@ const userController = {
 
     buyBooster: async (name, price = 1) => {
         return await userDAO.buyBooster(name, price)
+    },
+
+    useBooster: async (name) => {
+        return await userDAO.useBooster(name)
     }
 
 }

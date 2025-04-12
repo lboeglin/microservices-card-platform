@@ -1,7 +1,7 @@
 "use strict";
 
 import { mongoose } from "mongoose";
-import { User } from "../model/user.mjs";
+import User from "../model/user.mjs";
 import { hashPassword, verifyPassword } from "../utils/hashing.mjs";
 import crypto from "crypto";
 import { Int32 } from "mongodb";
@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 0,
+    default: 10,
   },
   collection: {
     type: [Int32],
@@ -38,11 +39,11 @@ const userSchema = new mongoose.Schema({
   lastBooster: {
     type: Number,
     required: true,
-    default: Date.now(), // Not sure about this one
+    default: Date.now, // Not sure about this one
   },
 });
 
-const projection = { _id: 0, __v: 0 };
+const projection = { _id: 0, __v: 0, password: 0, salt: 0 };
 
 const adapter = (mongooseUser) => {
   if (!mongooseUser) {
@@ -61,33 +62,42 @@ const userDAO = {
       if (!user) {
         return null
       }
-      
+
       return adapter(user)
     } catch (error) {
       throw error
     }
   },
 
-  createUser: async (user) => {
+
+  createUser: async (name, password) => {
     try {
-      if (!user.name || !user.password) {
+      if (name.trim() == "" || password.trim() == "") {
         return null
       }
 
-      const res = await userDAO.getUserByName(user.name)
+      const res = await userDAO.getUserByName(name)
       if (res != null) {
         return null
       }
 
       const salt = crypto.randomBytes(128).toString("base64")
-      const hashedPassword = await hashPassword(user.password, salt)
+      const hashedPassword = await hashPassword(password, salt)
 
-      user.salt = salt
-      user.password = hashedPassword
-      const newUser = new MongoUser(user)
+
+      const newUser = new MongoUser({
+        name,
+        password: hashedPassword,
+        salt,
+        coins: 10,
+        collection: [],
+        boosters: [],
+        lastBooster: Date.now(),
+      })
+
       await newUser.save()
 
-      return await userDAO.getUserByName(user.name)
+      return await userDAO.getUserByName(name)
     } catch (error) {
       throw error
     }
@@ -95,9 +105,9 @@ const userDAO = {
 
   loginUser: async (name, password) => {
     try {
-      const user = await userDAO.getUserByName(name)
+      const user = await MongoUser.findOne({ name: name }, { _id: 0, __v: 0 })
       if (!user) {
-        return null
+        throw new Error(`No fucking user named : ${name} `)
       }
 
       const correct = await verifyPassword(user.password, password, user.salt)
@@ -121,27 +131,27 @@ const userDAO = {
     }
   },
 
-  updateUserName: async ({ name, newName }) => {
+  updateUserName: async (name, newName) => {
     try {
-        const user = await userDAO.getUserByName(name)
-        if (!user) {
-            return null
-        }
+      const user = await MongoUser.findOne({ name: name })
+      if (!user) {
+        return null
+      }
 
-        const existingUser = await userDAO.getUserByName(newName)
-        if (existingUser != null) {
-            return null
-        }
+      const existingUser = await userDAO.getUserByName(newName)
+      if (existingUser != null) {
+        return null
+      }
 
-        user.name = newName
-        await user.save()
-        return await userDAO.getUserByName(newName)
+      user.name = newName
+      await user.save()
+      return await userDAO.getUserByName(newName)
     } catch (error) {
-        throw error
+      throw error
     }
   },
 
-  updatePassword: async ({ name, currentPassword, newPassword }) => {
+  updatePassword: async (name, currentPassword, newPassword) => {
     try {
       const user = await userDAO.loginUser(name, currentPassword)
       if (!user) {
@@ -160,7 +170,7 @@ const userDAO = {
     }
   },
 
-  sellCard: async ({ name, cardId }) => {
+  sellCard: async (name, cardId) => {
     try {
       const user = await userDAO.getUserByName(name)
       if (!user) {
@@ -181,36 +191,38 @@ const userDAO = {
     }
   },
 
-  addCards: async ({ name, cards }) => {
+  addCards: async (name, cards) => {
     try {
-        const user = await userDAO.getUserByName(name)
-        if (!user) {
-            return null
+      const user = await MongoUser.findOne({ name: name })
+      if (!user) {
+        return null
+      }
+
+      const collection = user.collection
+      cards.forEach(cardId => {
+        if (collection.includes(cardId)) {
+          user.coins += 1 // Same problem with the sell card, value is currently placeholder
+        } else {
+          collection.push(cardId)
         }
+      });
 
-        const collection = user.collection
-        cards.forEach(cardId => {
-            if (collection.includes(cardId)) {
-                user.coins += 1 // Same problem with the sell card, value is currently placeholder
-            } else {
-                collection.push(cardId)
-            }
-        });
-
-        await user.save()
-        return await userDAO.getUserByName(name)
+      await user.save()
+      return await userDAO.getUserByName(name)
     } catch (error) {
-        throw error
+      throw error
     }
   },
 
-  claimBooster: async ({ name, currentTime }) => {
+  claimBooster: async (name, currentTime) => {
     try {
-      const user = await userDAO.getUserByName(name)
+      const user = await MongoUser.findOne({ name: name })
       if (!user) {
         return -1
       }
-
+      if (user.boosters.length == 2) {
+        throw new Error("Max 2 booster claimed per user")
+      }
       user.boosters.push(currentTime)
       await user.save()
       return user.boosters.length // Should be 1 or 2 else :skull:
@@ -219,20 +231,40 @@ const userDAO = {
     }
   },
 
-  buyBooster: async ({ name, price }) => {
+  buyBooster: async (name, price) => {
     try {
-      const user = await userDAO.getUserByName(name)
+      const user = await MongoUser.findOne({ name: name })
       if (!user) {
         return null
       }
 
       if (user.coins < price) {
         return null
-      } 
+      }
 
       user.coins = user.coins - price
       await user.save()
       return await userDAO.getUserByName(name)
+    } catch (error) {
+      throw error
+    }
+  },
+
+  useBooster: async (name) => {
+    try {
+      const user = await MongoUser.findOne({ name: name })
+      if (!user) {
+        throw new Error("Invalid user name")
+      }
+
+      if (user.boosters.length < 1) {
+        throw new Error("You currently have no booster available")
+      }
+
+      user.boosters.shift()
+      user.lastBooster = Date.now()
+      await user.save()
+      return user.boosters.length
     } catch (error) {
       throw error
     }

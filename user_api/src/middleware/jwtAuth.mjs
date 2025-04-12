@@ -17,10 +17,16 @@ export function generateRefreshToken(payload) {
 }
 
 export function authenticateRefreshToken(req, res, next) {
-    const refreshToken = req.body.refreshToken || req.cookies.refreshToken
+    const authHeader = req.headers['authorization'];
+
+    if (!authHeader) {
+        return res.status(401).json({ message: 'Authorization header is missing' });
+    }
+
+    const refreshToken = authHeader.split(' ')[1];
 
     if (!refreshToken) {
-        return res.status(401).json({ message: 'Refresh token is required' })
+        return res.status(401).json({ message: 'Refresh token is required' });
     }
 
     jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (error, decoded) => {
@@ -44,11 +50,11 @@ export function extractNameFromToken(req) {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        return res.status(401).json({ message: 'Token missing' })
+        return null
     }
     const decoded = jwt.decode(token)
     if (!decoded?.name) {
-        return res.status(400).json({ message: 'Invalid token content' })
+        return null
     }
     return decoded.name
 }

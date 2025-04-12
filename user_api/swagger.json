@@ -22,7 +22,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "username": {
+                "name": {
                   "example": "any"
                 },
                 "password": {
@@ -55,7 +55,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "username": {
+                "name": {
                   "example": "any"
                 },
                 "password": {
@@ -228,8 +228,38 @@
         }
       }
     },
+    "/addCard": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "cards": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/booster": {
-      "post": {
+      "put": {
         "description": "",
         "responses": {
           "200": {
@@ -247,21 +277,31 @@
         }
       }
     },
-    "/addCard": {
+    "/booster/use": {
+      "put": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/booster/buy/{price}": {
       "put": {
         "description": "",
         "parameters": [
           {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "cards": {
-                  "example": "any"
-                }
-              }
-            }
+            "name": "price",
+            "in": "path",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {

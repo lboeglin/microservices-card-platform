@@ -15,17 +15,18 @@ const router = express.Router()
 router
     .route('/user/login')
     .post(async (req, res) => {
-        const { username, password } = req.body
+        const { name, password } = req.body
         try {
-            const user = await userController.loginUser(username, password)
+            const user = await userController.loginUser(name, password)
             if (!user) {
                 return res.status(401).send({ message: "Invalid credentials" })
             }
-            const accessToken = req.newAccessToken
-            const refreshToken = req.newRefreshToken
+            const accessToken = generateAccessToken({ name: name });
+            const refreshToken = generateRefreshToken({ name: name });
+            
             res.status(200).json({ accessToken, refreshToken })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 
@@ -33,18 +34,18 @@ router
 router
     .route('/user/register')
     .post(async (req, res) => {
-        const { username, password } = req.body
-        if (!username || !password) {
+        const { name, password } = req.body
+        if (!name || !password) {
             return res.status(400).send({ message: "Username and password are required" })
         }
         try {
-            const user = await userController.register({ username, password })
+            const user = await userController.register(name, password)
             if (user != null) {
-                return res.status(201).send({ message: "User created" })
+                return res.status(201).send({ message: `User created` })
             }
-            res.status(409).send({ message: "Username already taken" })
+            res.status(409).send({ message: "Username already taken or failed to register" })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 
@@ -54,18 +55,18 @@ router
     .post(authenticateRefreshToken, async (req, res) => {
         try {
 
-            const newAccessToken = generateAccessToken({ name: req.user.name });
-            const newRefreshToken = generateRefreshToken({ name: req.user.name });
+            const newAccessToken = req.newAccessToken
+            const newRefreshToken = req.newRefreshToken
             
             res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 
 // Get info from user (not sure if need cuz only send back collection and boosters)
 // DELETE a user from it's name (not sure if need password to delete cuz annoying when we can just make a r u sure button)
-// UPDATE a user name (send back user info)
+// UPDATE a user name (send back user info/tokens)
 router
     .route('/user')
     .get(async (req, res) => {
@@ -77,7 +78,7 @@ router
             }
             res.status(404).send({ message: "User not found" })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
     .delete(async (req, res) => {
@@ -89,7 +90,7 @@ router
             }
             res.status(400).send({ message: "Failed to delete user" })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
     .put(async (req, res) => {
@@ -97,19 +98,22 @@ router
             const name = extractNameFromToken(req)
             const {newName} = req.body
             if (!newName || newName.trim() === "") {
-                return res.status(400).send({message: "A new valide name is required"})
+                return res.status(400).send({message: "A new valide name is required" })
             }
             const user = await userController.getUserByName(newName)
             if (user != null) {
-                return res.status(409).send({ message: "UUsername already taken"})
+                return res.status(409).send({ message: "UUsername already taken" })
             }
             const newUser = await userController.updateName(name, newName)
             if (newUser) {
-                return res.status(200).send(newUser)
+                const newAccessToken = generateAccessToken({ name: newName })
+                const newRefreshToken = generateRefreshToken({ name: newName })
+    
+                return res.status(200).send({ user: newUser, accessToken: newAccessToken, refreshToken: newRefreshToken })
             }
-            res.status(400).send({ message: "Failed to update name" })
+            res.status(400).send({ message: `Failed to update name ${newUser}` })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 
@@ -127,7 +131,7 @@ router
             }
             res.status(400).send({ message: "Failed to update password" })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 
@@ -143,7 +147,7 @@ router
             }
             res.status(404).send({ message: "Collection not found" })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 
@@ -160,7 +164,7 @@ router
             }
             res.status(400).send({ message: "Could not sell card" })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 
@@ -181,15 +185,15 @@ router
             }
             res.status(400).send({ message: "Could not add cards" })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 
 // Called when going to gacha page (on client side so not sure if this function should be here) 
-// Return number of free booster
+// Return number of free booster owned
 router
     .route('/booster')
-    .post(async (req, res) => {
+    .put(async (req, res) => {
         try {
             const name = extractNameFromToken(req)
             const user = await userController.getUserByName(name)
@@ -199,9 +203,7 @@ router
             const boosters = user.boosters
             
             let lastBooster = null
-            if (boosters.length == 2) {
-                lastBooster =  Math.min(...boosters)
-            } else if (boosters.length == 1) {
+            if (boosters.length > 0) {
                 lastBooster = boosters[0]
             } else {
                 lastBooster = user.lastBooster
@@ -213,7 +215,7 @@ router
             if (lastBooster) {
                 const timeDifference = currentTime - lastBooster
                 let numberOfBooster = boosters.length
-                if (timeDifference >= twelveHours) {
+                if (timeDifference >= twelveHours && numberOfBooster < 2) {
                     numberOfBooster = await userController.claimBooster(name, currentTime)
                 }
                 return res.status(200).send(numberOfBooster)
@@ -222,10 +224,36 @@ router
             return res.status(400).send({ message: "Failed to check boosters available" }) 
 
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 
+// Use one of the free booster inside the inventory if have any
+router
+    .route("/booster/use")
+    .put(async (req, res) => {
+        try {
+            const name = extractNameFromToken(req)
+            const user = await userController.getUserByName(name)
+            if (!user) {
+                return res.status(400).send({ message: "User not found" })
+            }
+
+            if (user.boosters.length < 1) {
+                return res.status(400).send({ message: "No booster ready to be oponed "})
+            }
+
+            const result = await userController.useBooster(name)
+            if (result != null) {
+                return res.status(200).send({ message: "Booster opened" })
+            }
+            res.status(400).send({ message: "Failed to open booster" })
+        } catch (error) {
+            res.status(500).send({ message: error.message })
+        }
+    })
+
+// Buy a booster at a set price 
 router
     .route("/booster/buy/:price")
     .put(async (req, res) => {
@@ -236,7 +264,7 @@ router
                 return res.status(400).send({ message: "User not found" })
             }
 
-            const price = req.param.price || 1
+            const price = req.params.price || 1
             if (user.coins < price) {
                 return res.status(400).send({ message: "The user does not have enough coins" })
             }
@@ -247,7 +275,7 @@ router
             }
             res.status(400).send({ message: "Failled to buy a booster" })
         } catch (error) {
-            res.status(500).send({ message: error })
+            res.status(500).send({ message: error.message })
         }
     })
 export default router
