@@ -29,7 +29,7 @@ const cardController = {
         console.log('amount to fetch: %d, amount to generate: %d', amountToFetch, amountToGenerate)
         if (amountToFetch > 0) {
             cards.push(
-                await cardDao.getRandomCards(amountToFetch)
+                ...await cardDao.getRandomCards(amountToFetch)
             )
         }
         const name_source = Config.sources.names[0]
