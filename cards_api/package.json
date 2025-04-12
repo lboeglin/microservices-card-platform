@@ -2,10 +2,12 @@
   "name": "gacha_api",
   "version": "1.0.0",
   "description": "gacha_api",
+  "type": "module",
   "main": "server.mjs",
   "scripts": {
     "start": "node server.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test --experimental-test-coverage --test-force-exit",
+    "start-gendoc": "node ./swagger-autogen.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +20,7 @@
     "express": "^5.1.0",
     "mongodb-memory-server": "^10.1.4",
     "mongoose": "^8.13.1",
+    "node-fetch": "^3.3.2",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"
   }
