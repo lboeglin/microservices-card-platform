@@ -1,1 +1,3 @@
-here is a readme because git want one
+# Proxy - Point d'Entrée du Système
+
+Le **proxy** dans cette architecture logicielle sert de point d'entrée centralisé pour toutes les communications entre les micro-services. Il agit comme un intermédiaire qui redirige les requêtes HTTP vers les services appropriés tout en appliquant des règles de sécurité et de gestion des accès. Le rôle du proxy est de simplifier les interactions avec le système en exposant une interface unique aux clients tout en masquant la complexité interne du réseau de micro-services. En tant que couche d'abstraction, il permet également de gérer les aspects de scalabilité, de répartition de charge et de supervision. Chaque interaction avec le proxy est soigneusement testée et documentée pour garantir son bon fonctionnement et sa facilité de déploiement sur les VM de l'IUT.
