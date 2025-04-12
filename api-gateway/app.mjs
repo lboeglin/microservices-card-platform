@@ -20,7 +20,7 @@ app.use((req , res, next) => {
 
 app.use(express.json())
 
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerJson))
+// app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerJson))
 
 const {default: routes} = await import ('./api/routes/routes.mjs')
 app.use(APIPATH+'/', routes)

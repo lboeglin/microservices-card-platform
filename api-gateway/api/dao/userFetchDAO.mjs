@@ -183,5 +183,3 @@ const testRegister = async () => {
         console.error('Register failed:', err.message)
     }
 }
-
-testRegister()

@@ -3,7 +3,7 @@
 import express from 'express'
 import userRouter from './userRoute.mjs'
 import cardRouter from './cardRoute.mjs'
-import authMiddleware from '../middlewares/authMiddleware.js'
+import authMiddleware from '../middleware/auth.mjs'
 
 const router = express.Router()
 

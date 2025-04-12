@@ -16,3 +16,5 @@ const cardController = {
         return await cardFetchDAO.findCollection(collectionIds)
     }
 }
+
+export default cardController;
