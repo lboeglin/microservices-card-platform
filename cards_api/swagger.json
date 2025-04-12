@@ -12,23 +12,15 @@
     "https"
   ],
   "paths": {
-    "/": {
+    "/get-cards/{amount}": {
       "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
-    "/get-cards": {
-      "get": {
-        "description": "",
+        "summary": "Returns a given amount of random cards.",
+        "description": "The cards are either generated on the fly then persisted into the  database, or fetched from the already stored cards. The amount of generated cards is  random but capped by the maximal amount of cards configuration value, as well as  adjusted if there are not enough cards in the database to fulfill the request.",
         "parameters": [
           {
             "name": "amount",
-            "in": "query",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -36,18 +28,75 @@
           "200": {
             "description": "OK"
           },
-          "400": {
-            "description": "Bad Request"
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
     },
     "/get-existing-cards": {
       "get": {
+        "summary": "Returns an array of all the cards that have already been generated.",
         "description": "",
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/get-card-info/{id}": {
+      "get": {
+        "summary": "Returns a card object from the specified ID.",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "The ID of the desired card."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/get-collection-info": {
+      "post": {
+        "summary": "Returns an array with the corresponding cards.",
+        "description": "It is the same as `/get-card-info/{id}` but with an array of IDs.",
+        "parameters": [
+          {
+            "name": "IDs",
+            "in": "body",
+            "description": "An array of card ids",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "example": [
+                1,
+                2,
+                3
+              ],
+              "items": {
+                "type": "number"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }

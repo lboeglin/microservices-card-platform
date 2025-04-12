@@ -20,7 +20,12 @@ const Config = {
 		],
 		names: [
 			{
-				src: "https://example.com/api/v0/name", // Path to the name fetching endpoint.
+				single_name_src: "https://randommer.io/api/Name?nameType=firstname&quantity=1", // Path to the name fetching endpoint.
+				multiple_names_src: "https://randommer.io/api/Name?nameType=firstname",
+				multiple_names_param: "quantity",
+				api_param: "",
+				api_key: "",
+				src_path: "url",
 			}
 		]
 	},

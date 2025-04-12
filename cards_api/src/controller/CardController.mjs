@@ -13,7 +13,13 @@ const cardController = {
         return await cardDao.getCard(id)
     },
 
-    getRandom: async (amount) => {
+    /**
+     * Returns an `amount` of cards.
+     * The cards are either generated on the fly, or
+     * fetched from the database depending on a few factors.
+     * @param {number} amount 
+     */
+    getRandomCards: async (amount) => {
         const amountToGenerate = Math.min(
             Config.maxAmountOfStoredCards - Card.existingCards,
             Math.max(amount - Card.existingCards, Math.round(Math.random() * amount)),
@@ -26,6 +32,8 @@ const cardController = {
                 await cardDao.getRandomCards(amountToFetch)
             )
         }
+        const name_source = Config.sources.names[0]
+        const names = (await resourceFetcherDao.fetchMany(name_source.multiple_names_src, name_source.multiple_names_param, amountToGenerate, '', name_source.api_key))
         for (let i = 0; i < amountToGenerate; i++) {
             // Take a random image source
             const image_source = Config.sources.images[Math.floor(Math.random() * Config.sources.images.length)]
@@ -33,7 +41,7 @@ const cardController = {
             const image = (await resourceFetcherDao.fetchOne(image_source.single_image_src))[0][image_source.src_path]
             const newCard = new Card({
                 id: Card.existingCards,
-                name: 'Ichika', // oops all ichika
+                name: names[i],
                 type: image_source.source_type,
                 rarity: getRarity(),
                 image: image
@@ -44,39 +52,12 @@ const cardController = {
         return cards
     },
 
-    getXRandomByFilter: async (x, type, rarityMin, rarityMax) => {
+    getRandomCardsFiltered: async (amount, type, rarityMin, rarityMax) => {
         const cards = []
-        for (let i = 0; i < x; i++) {
+        for (let i = 0; i < amount; i++) {
             cards.push(cardDao.getCardWithFilter(type, rarityMin, rarityMax))
         }
         return cards
-    },
-
-    getAvailableBooster: async () => {
-        return await boosterDAO.getAllAvailable()
-    },
-
-    getBooster: async (cardType) => {
-        const booster = []
-
-        const luck = Math.floor(Math.random() * 100) + 1;
-        if (luck <= 1) {
-            booster.push(this.getXRandomByFilter(6, cardType, 2, 4)) // TODO move rarity constants to a config file
-        } else if (luck <= 10) {
-            booster.push(this.getXRandomByFilter(3, cardType, 1, 1))
-            booster.push(this.getXRandomByFilter(3, cardType, 2, 4))
-        } else {
-            booster.push(this.getXRandomByFilter(5, cardType, 1, 1))
-            booster.push(this.getXRandomByFilter(1, cardType, 2, 3))
-        }
-
-        return booster
-    },
-
-    getSpecialBooster: async (cardType) => {
-        const booster = []
-        booster.push(this.getXRandomByFilter(6, cardType, 2, 4))
-        return booster
     },
 }
 

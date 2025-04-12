@@ -31,8 +31,8 @@ const resourceFetcherDao = {
                 url.searchParams.append(api_param, api_key);
 
             const response = agent
-                ? await fetch(url.toString(), { agent })
-                : await fetch(url.toString());
+                ? await fetch(url.toString(), { agent, headers: { 'X-Api-Key': api_key } })
+                : await fetch(url.toString(), { headers: { 'X-Api-Key': api_key } });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -63,8 +63,8 @@ const resourceFetcherDao = {
                 url.searchParams.append(api_param, api_key);
 
             const response = agent
-                ? await fetch(url.toString(), { agent })
-                : await fetch(url.toString());
+                ? await fetch(url.toString(), { agent, headers: { 'X-Api-Key': api_key } })
+                : await fetch(url.toString(), { headers: { 'X-Api-Key': api_key } });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
