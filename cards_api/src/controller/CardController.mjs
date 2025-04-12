@@ -33,12 +33,12 @@ const cardController = {
             )
         }
         const name_source = Config.sources.names[0]
-        const names = (await resourceFetcherDao.fetchMany(name_source.multiple_names_src, name_source.multiple_names_param, amountToGenerate, '', name_source.api_key))
+        const names = (await resourceFetcherDao.fetchMany(name_source.multiple_names_src, name_source.multiple_names_param, amountToGenerate, name_source.api_key_param, name_source.api_key))
         for (let i = 0; i < amountToGenerate; i++) {
             // Take a random image source
             const image_source = Config.sources.images[Math.floor(Math.random() * Config.sources.images.length)]
             // Get a random image from it
-            const image = image_source.cdn_root + (await resourceFetcherDao.fetchOne(image_source.single_image_src))[0][image_source.src_path]
+            const image = image_source.cdn_root + (await resourceFetcherDao.fetchOne(image_source.single_image_src, image_source.api_key_param, image_source.api_key))[0][image_source.src_path]
             const newCard = new Card({
                 id: Card.existingCards,
                 name: names[i],
