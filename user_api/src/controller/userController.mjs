@@ -36,13 +36,18 @@ const userController = {
         return await userDAO.sellCard(name, cardId)
     },
 
+    addCards: async (name, cards) => {
+        return await userDAO.addCardsToCollection(name, cards)
+    },
+
     claimBooster: async (name, currentTime) => {
         return await userDAO.claimBooster(name, currentTime)
     },
 
-    addCards: async (name, cards) => {
-        return await userDAO.addCardsToCollection(name, cards)
+    buyBooster: async (name, price = 1) => {
+        return await userDAO.buyBooster(name, price)
     }
+
 }
 
 export default userController

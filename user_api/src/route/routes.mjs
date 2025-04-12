@@ -164,6 +164,27 @@ router
         }
     })
 
+// Add an array of cards to collection
+router
+    .route("/addCard")
+    .put(async (req, res) => {
+        try {
+            const name = extractNameFromToken(req)
+            const user = await userController.getUserByName(name)
+            if (!user) {
+                return res.status(400).send({ message: "User not found" })
+            }
+            const {cards} = req.body
+            const result = await userController.addCards(name, cards)
+            if (result) {
+                return res.status(200).send({ message: "Cards added" })
+            }
+            res.status(400).send({ message: "Could not add cards" })
+        } catch (error) {
+            res.status(500).send({ message: error })
+        }
+    })
+
 // Called when going to gacha page (on client side so not sure if this function should be here) 
 // Return number of free booster
 router
@@ -205,9 +226,8 @@ router
         }
     })
 
-// Add an array of cards to collection
 router
-    .route("/addCard")
+    .route("/booster/buy/:price")
     .put(async (req, res) => {
         try {
             const name = extractNameFromToken(req)
@@ -215,15 +235,19 @@ router
             if (!user) {
                 return res.status(400).send({ message: "User not found" })
             }
-            const {cards} = req.body
-            const result = await userController.addCards(name, cards)
-            if (result) {
-                return res.status(200).send({ message: "Cards added" })
+
+            const price = req.param.price || 1
+            if (user.coins < price) {
+                return res.status(400).send({ message: "The user does not have enough coins" })
             }
-            res.status(400).send({ message: "Could not add cards" })
+
+            const result = await userController.buyBooster(name, price)
+            if (result != null) {
+                return res.status(200).send({ message: "Booster bought successfully" })
+            }
+            res.status(400).send({ message: "Failled to buy a booster" })
         } catch (error) {
             res.status(500).send({ message: error })
         }
     })
-
 export default router

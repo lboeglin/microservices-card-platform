@@ -181,21 +181,6 @@ const userDAO = {
     }
   },
 
-  claimBooster: async ({ name, currentTime }) => {
-    try {
-      const user = await userDAO.getUserByName(name)
-      if (!user) {
-        return -1
-      }
-
-      user.boosters.push(currentTime)
-      await user.save()
-      return user.boosters.length // Should be 1 or 2 else :skull:
-    } catch (error) {
-      throw error
-    }
-  },
-
   addCards: async ({ name, cards }) => {
     try {
         const user = await userDAO.getUserByName(name)
@@ -218,6 +203,40 @@ const userDAO = {
         throw error
     }
   },
+
+  claimBooster: async ({ name, currentTime }) => {
+    try {
+      const user = await userDAO.getUserByName(name)
+      if (!user) {
+        return -1
+      }
+
+      user.boosters.push(currentTime)
+      await user.save()
+      return user.boosters.length // Should be 1 or 2 else :skull:
+    } catch (error) {
+      throw error
+    }
+  },
+
+  buyBooster: async ({ name, price }) => {
+    try {
+      const user = await userDAO.getUserByName(name)
+      if (!user) {
+        return null
+      }
+
+      if (user.coins < price) {
+        return null
+      } 
+
+      user.coins = user.coins - price
+      await user.save()
+      return await userDAO.getUserByName(name)
+    } catch (error) {
+      throw error
+    }
+  }
 };
 
 export default userDAO;
