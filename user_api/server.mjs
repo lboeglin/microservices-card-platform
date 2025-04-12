@@ -19,16 +19,16 @@ const env = (new URL(import.meta.url)).searchParams.get('ENV') || process.env.EN
 console.log(`env : ${env}`)
 
 //connexion à la BD
-if (env !== 'TEST') {
-    await mongoose.connect(mongoURL + '/' + mongoDB)
-    console.log("Mongo on " + mongoURL + '/' + mongoDB)
-} else {
+if (env=='TEST') {
     //en test le travail est en mémoire
-    const {MongoMemoryServer} = await import('mongodb-memory-server')
+    const {MongoMemoryServer}  = await import('mongodb-memory-server')
     const mongoServer = await MongoMemoryServer.create();
     const uri = mongoServer.getUri();
     await mongoose.connect(uri)
-    console.log("Mongo on memory " + uri)
+    console.log("Mongo on memory "+uri)
+} else {
+    await mongoose.connect(mongoURL + '/' + mongoDB)
+    console.log("Mongo on "+ mongoURL + '/' + mongoDB)
 }
 
 
