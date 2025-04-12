@@ -5,7 +5,7 @@
     "description": "",
     "version": "1.0.0"
   },
-  "host": "localhost:3001/user-api/v0",
+  "host": "localhost:3001/user-api",
   "basePath": "/",
   "schemes": [
     "http",
@@ -14,19 +14,23 @@
   "paths": {
     "/user/login": {
       "post": {
-        "description": "",
+        "summary": "Login user and return access/refresh tokens",
+        "description": "Authenticates a user and returns JWT access and refresh tokens.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 }
               }
             }
@@ -47,19 +51,23 @@
     },
     "/user/register": {
       "post": {
-        "description": "",
+        "summary": "Register a new user",
+        "description": "Creates a new user if the username is not already taken.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "name": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 }
               }
             }
@@ -83,7 +91,8 @@
     },
     "/user/refresh-tokens": {
       "post": {
-        "description": "",
+        "summary": "Refresh access and refresh tokens",
+        "description": "Uses a valid refresh token to issue new access and refresh tokens.",
         "responses": {
           "200": {
             "description": "OK"
@@ -96,7 +105,8 @@
     },
     "/user": {
       "get": {
-        "description": "",
+        "summary": "Get current user information",
+        "description": "Returns user information extracted from the JWT token.",
         "responses": {
           "200": {
             "description": "OK"
@@ -110,16 +120,19 @@
         }
       },
       "put": {
-        "description": "",
+        "summary": "Update username",
+        "description": "Updates the authenticated user",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "newName": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 }
               }
             }
@@ -141,7 +154,8 @@
         }
       },
       "delete": {
-        "description": "",
+        "summary": "Delete the current user",
+        "description": "Deletes the authenticated user based on the JWT token.",
         "responses": {
           "200": {
             "description": "OK"
@@ -157,19 +171,23 @@
     },
     "/user/password": {
       "put": {
-        "description": "",
+        "summary": "Update user password",
+        "description": "Updates the user",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "currentPassword": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 },
                 "newPassword": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "string"
                 }
               }
             }
@@ -190,7 +208,8 @@
     },
     "/user/collection": {
       "get": {
-        "description": "",
+        "summary": "Get card collection",
+        "description": "Returns an array of card IDs owned by the authenticated user.",
         "responses": {
           "200": {
             "description": "OK"
@@ -206,13 +225,15 @@
     },
     "/user/sell-card/{id}": {
       "put": {
-        "description": "",
+        "summary": "Sell a card from the collection",
+        "description": "Removes a card from the collection and adds coins to the user.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "ID of the card to sell"
           }
         ],
         "responses": {
@@ -230,16 +251,26 @@
     },
     "/addCard": {
       "put": {
-        "description": "",
+        "summary": "Add cards to the user",
+        "description": "Adds one or more card IDs to the user",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "cards": {
-                  "example": "any"
+                  "type": "array",
+                  "example": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
                 }
               }
             }
@@ -260,7 +291,8 @@
     },
     "/booster": {
       "put": {
-        "description": "",
+        "summary": "Check free boosters availability",
+        "description": "Checks if the user can claim a free booster based on time elapsed.",
         "responses": {
           "200": {
             "description": "OK"
@@ -279,7 +311,8 @@
     },
     "/booster/use": {
       "put": {
-        "description": "",
+        "summary": "Use a booster",
+        "description": "Uses one of the free boosters if available and returns result.",
         "responses": {
           "200": {
             "description": "OK"
@@ -295,13 +328,15 @@
     },
     "/booster/buy/{price}": {
       "put": {
-        "description": "",
+        "summary": "Buy a booster",
+        "description": "Buys a booster using the user\\'s coins.",
         "parameters": [
           {
             "name": "price",
             "in": "path",
             "required": true,
-            "type": "string"
+            "type": "integer",
+            "description": "Price of the booster to purchase"
           }
         ],
         "responses": {

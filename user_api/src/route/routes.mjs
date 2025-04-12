@@ -11,34 +11,56 @@ import {
 
 const router = express.Router()
 
-// Login user and send back tokens
 router
     .route('/user/login')
     .post(async (req, res) => {
-        const { name, password } = req.body
+        /*
+        #swagger.summary = 'Login user and return access/refresh tokens'
+        #swagger.description = 'Authenticates a user and returns JWT access and refresh tokens.'
+        #swagger.parameters['body'] = {
+            in: 'body',
+            required: true,
+            schema: {
+                name: 'string',
+                password: 'string'
+            }
+        }
+        */
         try {
+            const { name, password } = req.body
             const user = await userController.loginUser(name, password)
             if (!user) {
                 return res.status(401).send({ message: "Invalid credentials" })
             }
             const accessToken = generateAccessToken({ name: name });
             const refreshToken = generateRefreshToken({ name: name });
-            
+
             res.status(200).json({ accessToken, refreshToken })
         } catch (error) {
             res.status(500).send({ message: error.message })
         }
     })
 
-// Create a new user
 router
     .route('/user/register')
     .post(async (req, res) => {
-        const { name, password } = req.body
-        if (!name || !password) {
-            return res.status(400).send({ message: "Username and password are required" })
+        /*
+        #swagger.summary = 'Register a new user'
+        #swagger.description = 'Creates a new user if the username is not already taken.'
+        #swagger.parameters['body'] = {
+            in: 'body',
+            required: true,
+            schema: {
+                name: 'string',
+                password: 'string'
+            }
         }
+        */
         try {
+            const { name, password } = req.body
+            if (!name || !password) {
+                return res.status(400).send({ message: "Username and password are required" })
+            }
             const user = await userController.register(name, password)
             if (user != null) {
                 return res.status(201).send({ message: `User created` })
@@ -49,27 +71,30 @@ router
         }
     })
 
-// Send a new access token
 router
     .route('/user/refresh-tokens')
     .post(authenticateRefreshToken, async (req, res) => {
+        /*
+        #swagger.summary = 'Refresh access and refresh tokens'
+        #swagger.description = 'Uses a valid refresh token to issue new access and refresh tokens.'
+        */
         try {
-
             const newAccessToken = req.newAccessToken
             const newRefreshToken = req.newRefreshToken
-            
+
             res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
         } catch (error) {
             res.status(500).send({ message: error.message })
         }
     })
 
-// Get info from user (not sure if need cuz only send back collection and boosters)
-// DELETE a user from it's name (not sure if need password to delete cuz annoying when we can just make a r u sure button)
-// UPDATE a user name (send back user info/tokens)
 router
     .route('/user')
     .get(async (req, res) => {
+        /*
+        #swagger.summary = 'Get current user information'
+        #swagger.description = 'Returns user information extracted from the JWT token.'
+        */
         try {
             const name = extractNameFromToken(req)
             const user = await userController.getUserByName(name)
@@ -82,6 +107,10 @@ router
         }
     })
     .delete(async (req, res) => {
+        /*
+        #swagger.summary = 'Delete the current user'
+        #swagger.description = 'Deletes the authenticated user based on the JWT token.'
+        */
         try {
             const name = extractNameFromToken(req)
             const result = await userController.deleteUser(name)
@@ -94,11 +123,22 @@ router
         }
     })
     .put(async (req, res) => {
+        /*
+        #swagger.summary = 'Update username'
+        #swagger.description = 'Updates the authenticated user's name and returns new tokens.'
+        #swagger.parameters['body'] = {
+            in: 'body',
+            required: true,
+            schema: {
+                newName: 'string'
+            }
+        }
+        */
         try {
             const name = extractNameFromToken(req)
-            const {newName} = req.body
+            const { newName } = req.body
             if (!newName || newName.trim() === "") {
-                return res.status(400).send({message: "A new valide name is required" })
+                return res.status(400).send({ message: "A new valide name is required" })
             }
             const user = await userController.getUserByName(newName)
             if (user != null) {
@@ -108,7 +148,7 @@ router
             if (newUser) {
                 const newAccessToken = generateAccessToken({ name: newName })
                 const newRefreshToken = generateRefreshToken({ name: newName })
-    
+
                 return res.status(200).send({ user: newUser, accessToken: newAccessToken, refreshToken: newRefreshToken })
             }
             res.status(400).send({ message: `Failed to update name ${newUser}` })
@@ -117,14 +157,25 @@ router
         }
     })
 
-// Update user password
 router
     .route('/user/password')
     .put(async (req, res) => {
+        /*
+        #swagger.summary = 'Update user password'
+        #swagger.description = 'Updates the user's password given the current one.'
+        #swagger.parameters['body'] = {
+            in: 'body',
+            required: true,
+            schema: {
+                currentPassword: 'string',
+                newPassword: 'string'
+            }
+        }
+        */
         try {
             const name = extractNameFromToken(req)
             const { currentPassword, newPassword } = req.body
-            
+
             const result = await userController.updatePassword(name, currentPassword, newPassword)
             if (result) {
                 return res.status(200).send({ message: "Password updated" })
@@ -135,10 +186,13 @@ router
         }
     })
 
-// Send back array of card ids
 router
     .route('/user/collection')
     .get(async (req, res) => {
+        /*
+        #swagger.summary = 'Get card collection'
+        #swagger.description = 'Returns an array of card IDs owned by the authenticated user.'
+        */
         try {
             const name = extractNameFromToken(req)
             const collection = await userController.getCollection(name)
@@ -151,10 +205,19 @@ router
         }
     })
 
-// Send an id of card from the collection and remove it than adding money to the account
 router
     .route('/user/sell-card/:id')
     .put(async (req, res) => {
+        /*
+        #swagger.summary = 'Sell a card from the collection'
+        #swagger.parameters['id'] = {
+            in: 'path',
+            required: true,
+            type: 'integer',
+            description: 'ID of the card to sell'
+        }
+        #swagger.description = 'Removes a card from the collection and adds coins to the user.'
+        */
         try {
             const username = extractNameFromToken(req)
             const cardId = req.params.id
@@ -168,17 +231,27 @@ router
         }
     })
 
-// Add an array of cards to collection
 router
     .route("/addCard")
     .put(async (req, res) => {
+         /*
+        #swagger.summary = 'Add cards to the user's collection'
+        #swagger.parameters['body'] = {
+            in: 'body',
+            required: true,
+            schema: {
+                cards: [1, 2, 3]
+            }
+        }
+        #swagger.description = 'Adds one or more card IDs to the user's collection.'
+        */
         try {
             const name = extractNameFromToken(req)
             const user = await userController.getUserByName(name)
             if (!user) {
                 return res.status(400).send({ message: "User not found" })
             }
-            const {cards} = req.body
+            const { cards } = req.body
             const result = await userController.addCards(name, cards)
             if (result) {
                 return res.status(200).send({ message: "Cards added" })
@@ -189,11 +262,13 @@ router
         }
     })
 
-// Called when going to gacha page (on client side so not sure if this function should be here) 
-// Return number of free booster owned
 router
     .route('/booster')
     .put(async (req, res) => {
+        /*
+        #swagger.summary = 'Check free boosters availability'
+        #swagger.description = 'Checks if the user can claim a free booster based on time elapsed.'
+        */
         try {
             const name = extractNameFromToken(req)
             const user = await userController.getUserByName(name)
@@ -201,14 +276,14 @@ router
                 return res.status(404).send({ message: "User not found" })
             }
             const boosters = user.boosters
-            
+
             let lastBooster = null
             if (boosters.length > 0) {
                 lastBooster = boosters[0]
             } else {
                 lastBooster = user.lastBooster
             }
-        
+
             const currentTime = Date.now()
             const twelveHours = 12 * 60 * 60 * 1000
 
@@ -220,18 +295,21 @@ router
                 }
                 return res.status(200).send(numberOfBooster)
             }
-            
-            return res.status(400).send({ message: "Failed to check boosters available" }) 
+
+            return res.status(400).send({ message: "Failed to check boosters available" })
 
         } catch (error) {
             res.status(500).send({ message: error.message })
         }
     })
 
-// Use one of the free booster inside the inventory if have any
 router
     .route("/booster/use")
     .put(async (req, res) => {
+        /*
+        #swagger.summary = 'Use a booster'
+        #swagger.description = 'Uses one of the free boosters if available and returns result.'
+        */
         try {
             const name = extractNameFromToken(req)
             const user = await userController.getUserByName(name)
@@ -240,7 +318,7 @@ router
             }
 
             if (user.boosters.length < 1) {
-                return res.status(400).send({ message: "No booster ready to be oponed "})
+                return res.status(400).send({ message: "No booster ready to be oponed " })
             }
 
             const result = await userController.useBooster(name)
@@ -253,10 +331,19 @@ router
         }
     })
 
-// Buy a booster at a set price 
 router
     .route("/booster/buy/:price")
     .put(async (req, res) => {
+        /*
+        #swagger.summary = 'Buy a booster'
+        #swagger.parameters['price'] = {
+            in: 'path',
+            required: false,
+            type: 'integer',
+            description: 'Price of the booster to purchase'
+        }
+        #swagger.description = 'Buys a booster using the user\'s coins.'
+        */
         try {
             const name = extractNameFromToken(req)
             const user = await userController.getUserByName(name)

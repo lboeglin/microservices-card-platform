@@ -23,7 +23,7 @@ app.use((req,res,next)=>{
 app.use(express.json())
 
 //route pour swagger
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerJson))
+app.use(APIPATH + '/doc', swaggerUi.serve, swaggerUi.setup(swaggerJson))
 
 //chargement des routes
 const {default: routes}  = await import ('./src/route/routes.mjs')
