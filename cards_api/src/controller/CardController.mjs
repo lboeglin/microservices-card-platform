@@ -38,7 +38,7 @@ const cardController = {
             // Take a random image source
             const image_source = Config.sources.images[Math.floor(Math.random() * Config.sources.images.length)]
             // Get a random image from it
-            const image = (await resourceFetcherDao.fetchOne(image_source.single_image_src))[0][image_source.src_path]
+            const image = image_source.cdn_root + (await resourceFetcherDao.fetchOne(image_source.single_image_src))[0][image_source.src_path]
             const newCard = new Card({
                 id: Card.existingCards,
                 name: names[i],
