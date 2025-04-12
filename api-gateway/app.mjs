@@ -3,7 +3,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import swaggerUi from 'swagger-ui-express'
-import swaggerJsDoc from 'swagger-jsdoc'
+import swaggerJson from './swagger.json' with {type: 'json'}
 
 dotenv.config()
 
@@ -20,7 +20,7 @@ app.use((req , res, next) => {
 
 app.use(express.json())
 
-// app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerJson))
+app.use('/api/v0/doc', swaggerUi.serve, swaggerUi.setup(swaggerJson))
 
 const {default: routes} = await import ('./api/routes/routes.mjs')
 app.use(APIPATH+'/', routes)
