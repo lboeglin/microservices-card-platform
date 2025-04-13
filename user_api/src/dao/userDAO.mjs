@@ -80,6 +80,8 @@ const userDAO = {
       const salt = crypto.randomBytes(128).toString("base64")
       const hashedPassword = await hashPassword(password, salt)
 
+      const twelveHoursAgo = Date.now() - 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+
 
       const newUser = new MongoUser({
         name,
@@ -87,6 +89,7 @@ const userDAO = {
         salt,
         coins: 10,
         collection: [],
+        boosters: [twelveHoursAgo, twelveHoursAgo],
         lastBooster: Date.now(),
       })
 
@@ -251,9 +254,9 @@ const userDAO = {
       if (!user) {
         throw new Error("Invalid user name")
       }
-
+      
       if (user.boosters.length < 1) {
-        throw new Error(`You currently have no booster available`)
+        throw new Error(`You currently have no booster available : ${user}`)
       }
 
       user.boosters.shift()
