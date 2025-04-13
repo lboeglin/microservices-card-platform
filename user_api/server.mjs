@@ -37,7 +37,7 @@ const { default: app }  = await import ('./app.mjs')
 
 //lancement du serveur http
 const server = app.listen(serverPort, () =>
-    console.log(`app listening on port ${serverPort}\nAPI is running on http://127.0.0.1:3001/user-api/doc`)
+    console.log(`app listening on port ${serverPort}\nAPI is running on http://127.0.0.1:8080/user-api/doc`)
 )
 
 

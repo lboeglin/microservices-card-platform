@@ -14,7 +14,7 @@ const config = {
         description: '',
     },
     tags: [ ],
-    host: 'localhost:'+serverPort+APIPATH,
+    host: 'http://172.21.44.109:'+serverPort+APIPATH,
     schemes: ['http', 'https'],
 };
 
