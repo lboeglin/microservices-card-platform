@@ -28,8 +28,6 @@ for (let signal of ['SIGINT', 'SIGTERM']) {
         console.log(`Received ${signal}. Shutting down server...`)
         server.close(async () => {
             console.log('Server shut down gracefully.')
-            await mongoose.connection.close()
-            console.log('MongoDB connection closed.')
             process.exit(0)
         })
     })

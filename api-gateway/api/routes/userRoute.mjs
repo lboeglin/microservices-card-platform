@@ -1,7 +1,8 @@
 'use strict'
 
 import express from 'express'
-import userController from '../controller/userController.mjs'
+import userController from '../controller/controller.mjs'
+import fetch from 'node-fetch'
 
 const userRouter = express.Router()
 
@@ -108,18 +109,6 @@ userRouter
     try {
       const jwt = getJwtFromRequest(req)
       const result = await userController.sellCard(jwt, req.params.id)
-      res.status(200).json(result)
-    } catch (err) {
-      res.status(400).json({ message: err.message })
-    }
-  })
-
-userRouter
-  .route('/addCard')
-  .put(async (req, res) => {
-    try {
-      const jwt = getJwtFromRequest(req)
-      const result = await userController.addCard(jwt, req.body)
       res.status(200).json(result)
     } catch (err) {
       res.status(400).json({ message: err.message })

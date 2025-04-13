@@ -2,7 +2,6 @@
 
 import express from 'express'
 import userRouter from './userRoute.mjs'
-import cardRouter from './cardRoute.mjs'
 import authMiddleware from '../middleware/auth.mjs'
 
 const router = express.Router()
@@ -19,11 +18,8 @@ router.use('/user', (req, res, next) => {
     authMiddleware(req, res, next)
 })
 
-router.use('/card', authMiddleware) // Apply JWT verification for all card routes
-
 // Use the user and card routers
 router.use('/user', userRouter)
-router.use('/card', cardRouter)
 
 // Default route
 router.get('/', (req, res) => {

@@ -13,7 +13,7 @@ if (proxy !== undefined) {
     console.log('Not using proxy')
 }
 
-const urlBase = process.env.USER_SERVICE_URL+"/user-api"
+const urlBase = process.env.USER_SERVICE_URL + "/user-api"
 
 const userFetchDAO = (fetch) => ({
     login: async (credentials) => {
@@ -78,7 +78,7 @@ const userFetchDAO = (fetch) => ({
 
     buyBooster: async (jwt, price) => {
         const url = new URL(`${urlBase}/booster/buy/${price}`)
-        return doAuthPut(url, jwt,null, fetch)
+        return doAuthPut(url, jwt, null, fetch)
     },
 })
 
