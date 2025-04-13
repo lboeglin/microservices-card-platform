@@ -253,7 +253,7 @@ const userDAO = {
       }
 
       if (user.boosters.length < 1) {
-        throw new Error(`You currently have no booster available${user}`)
+        throw new Error(`You currently have no booster available`)
       }
 
       user.boosters.shift()
