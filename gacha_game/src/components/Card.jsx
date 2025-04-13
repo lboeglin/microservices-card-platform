@@ -7,12 +7,13 @@ export const Rarity = {
 	SUPER_RARE: 3
 }
 
-export default ({ name = 'Unnamed', rarity = Rarity.COMMON, artwork = '', goofy = false }) => {
+export default ({ name = 'Unnamed', rarity = Rarity.COMMON, artwork = '', goofy = false, onClick = null }) => {
 	const [tilt, setTilt] = useState({ x: 0, y: 0 })
 	const height = 290
 	const width = 180
 	const card = (
 		<div
+			onClick={onClick}
 			style={goofy ? {
 				width: `${width}px`,
 				height: `${height}px`,
