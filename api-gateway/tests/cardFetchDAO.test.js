@@ -1,6 +1,7 @@
 import { describe, it, beforeEach, afterEach } from 'node:test'
 import assert from 'node:assert/strict'
 import createCardFetchDAO from '../api/dao/cardFetchDAO.mjs'
+import fetch from 'node-fetch'
 
 const mockCard = (id) => ({
     id: Number(id),
@@ -26,7 +27,7 @@ describe('cardFetchDAO', () => {
     describe('findOne()', () => {
         const mockFetch = async (url) => {
             const parsedUrl = new URL(url)
-            const id = parsedUrl.searchParams.get('id')
+            const id = parsedUrl.pathname.split('/').pop()  
             return {
                 ok: true,
                 json: async () => mockCard(id)
@@ -135,23 +136,19 @@ describe('cardFetchDAO', () => {
     describe('findCollection()', () => {
         it('should return a collection of cards with proper fields', async () => {
             const mockFetch = async (url, options) => {
-                const body = JSON.parse(options.body)
+                const ids = JSON.parse(options.body)
                 return {
                     ok: true,
-                    json: async () => ({
-                        collection: body.collection.map(id => mockCard(id))
-                    })
+                    json: async () => ids.map(id => mockCard(id))
                 }
             }
-
+        
             const dao = createCardFetchDAO(mockFetch)
             const result = await dao.findCollection(['10', '20'])
-
-            assert.deepStrictEqual(result, {
-                collection: [mockCard('10'), mockCard('20')]
-            })
+        
+            assert.deepStrictEqual(result, [mockCard('10'), mockCard('20')])
         })
-
+        
         it('should throw if findCollection is called with empty array', async () => {
             const mockFetch = async () => ({
                 ok: false,
@@ -207,5 +204,39 @@ describe('cardFetchDAO', () => {
             ])
         })
     })
+
+    describe('Integration test: cardFetchDAO', () => {
+        const dao = createCardFetchDAO(fetch)
+        it('should fetch a card by ID from the real API', async () => {
+            const card = await dao.findOne('1') 
+
+            assert.ok(card)
+            assert.strictEqual(typeof card.name, 'string')
+            assert.strictEqual(typeof card.id, 'number')
+            assert.strictEqual(typeof card.rarity, 'number')
+            assert.ok(card.image)
+        })
+
+        it('should fetch a collection of cards', async () => {
+            const collection = await dao.findCollection([1, 2])
+            assert.ok(Array.isArray(collection))
+            assert.ok(collection.length > 0)
+        })
+
+        it('should return an error for an invalid ID', async () => {
+            await assert.rejects(() => dao.findOne('invalid-id'), /Error fetching data/)
+        })
+
+        it('should fetch multiple cards', async () => {
+            const cards = await dao.findMany(2) 
+            assert.ok(Array.isArray(cards))
+            assert.strictEqual(cards.length, 2)
+            assert.strictEqual(typeof cards[0].name, 'string')
+            assert.strictEqual(typeof cards[0].id, 'number')
+            assert.strictEqual(typeof cards[0].rarity, 'number')
+            assert.ok(cards[0].image)
+        }) 
+    })
 })
+
 

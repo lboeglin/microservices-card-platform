@@ -5,85 +5,80 @@ dotenv.config()
 
 const proxy = process.env.https_proxy
 
-let defaultAgent = null
-if (proxy != undefined) {
-    console.log(`Using proxy: ${proxy}`)
-    agent = new HttpsProxyAgent(proxy)
-}
-else {
-    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
-    console.log('Not using proxy')
-}
+const defaultAgent = proxy !== undefined
+    ? (() => {
+        console.log(`Using proxy: ${proxy}`)
+        return new HttpsProxyAgent(proxy)
+    })()
+    : (() => {
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+        console.log('Not using proxy')
+        return null
+    })()
 
-const urlBase = process.env.CARD_SERVICE_URL+process.env.API_PATH
+const urlBase = process.env.CARD_SERVICE_URL + process.env.API_PATH
 
 const cardFetchDAO = (fetch, agent = defaultAgent) => ({
-    findOne : async (id) => {
+    findOne: async (id) => {
         try {
-            const url = new URL(urlBase+'/card-info')
-            url.searchParams.append('id', id)
-
-            const response = agent != null ? await fetch(url.toString(), { agent: agent }): await fetch(url.toString())
-            
+            const url = new URL(`${urlBase}/get-card-info/${id}`)
+            const response = await fetch(url.toString(), agent ? { agent } : {})
             if (!response.ok) {
                 throw new Error(`Error fetching data: ${response.statusText}`)
             }
-
-            const json = await response.json()
-            return json
+            return await response.json()
         } catch (error) {
             console.error('Error fetching card data:', error)
             throw error
         }
     },
-    findCollection : async (collectionIds) => {
-        try {
-            const url = new URL(urlBase+'/collection-info')
 
-            const response = agent!=null ? await fetch(url.toString(), {
-                method: 'POST',  
-                headers: {
-                    'Content-Type': 'application/json',  
-                },
-                body: JSON.stringify({ collection: collectionIds })  
-            }) : await fetch(url.toString(), {
-                method: 'POST',  
-                headers: {
-                    'Content-Type': 'application/json',  
-                },
-                body: JSON.stringify({ collection: collectionIds })  
+    findCollection: async (collectionIds) => {
+        try {
+            const url = new URL(`${urlBase}/get-collection-info`)
+            const response = await fetch(url.toString(), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(collectionIds),
+                ...(agent && { agent })
             })
-
             if (!response.ok) {
                 throw new Error(`Error fetching data: ${response.statusText}`)
             }
-
-            const data = await response.json()
-            return data
+            return await response.json()
         } catch (error) {
-            console.error('Error fetching card data:', error)
+            console.error('Error fetching collection data:', error)
             throw error
         }
-        
     },
-    findMany : async (number) => {
-        try {
-            const url = new URL(urlBase+'/get-cards')
-            url.searchParams.append('num', number)
 
-            const response = agent != null ?
-                 await fetch(url.toString(), { agent })
-                : await fetch(url.toString())
-            
+    findMany: async (number) => {
+        try {
+            const url = new URL(`${urlBase}/get-cards/${number}`)
+            const response = await fetch(url.toString(), agent ? { agent } : {})
             if (!response.ok) {
                 throw new Error(`Error fetching data: ${response.statusText}`)
             }
-            const data = await response.json()
-            return data
+            return await response.json()
         } catch (error) {
-            console.error('Error fetching card data:', error)
+            console.error('Error fetching multiple cards:', error)
+            throw error
+        }
+    },
+
+    findAll: async () => {
+        try {
+            const url = new URL(`${urlBase}/get-existing-cards`)
+            const response = await fetch(url.toString(), agent ? { agent } : {})
+            if (!response.ok) {
+                throw new Error(`Error fetching data: ${response.statusText}`)
+            }
+            return await response.json()
+        } catch (error) {
+            console.error('Error fetching all cards:', error)
             throw error
         }
     }
 })
+
 export default cardFetchDAO
