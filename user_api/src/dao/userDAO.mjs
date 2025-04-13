@@ -24,22 +24,18 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 0,
-    default: 10,
   },
   collection: {
     type: [Int32],
     required: true,
-    default: [],
   },
   boosters: {
     type: [Number],
     required: true,
-    default: [],
   },
   lastBooster: {
     type: Number,
-    required: true,
-    default: Date.now, // Not sure about this one
+    required: true, // Not sure about this one
   },
 });
 
@@ -91,7 +87,6 @@ const userDAO = {
         salt,
         coins: 10,
         collection: [],
-        boosters: [],
         lastBooster: Date.now(),
       })
 
@@ -258,7 +253,7 @@ const userDAO = {
       }
 
       if (user.boosters.length < 1) {
-        throw new Error("You currently have no booster available")
+        throw new Error(`You currently have no booster available${user}`)
       }
 
       user.boosters.shift()
