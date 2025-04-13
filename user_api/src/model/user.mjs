@@ -98,22 +98,25 @@ class User {
      */
     constructor(obj) {
 
+        const twelveHoursAgo = Date.now() - 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+
         // Default values
-        obj.coins = obj.coins !== undefined ? obj.coins : 10
-        obj.collection = obj.collection !== undefined ? obj.collection : []
-        obj.boosters = obj.boosters !== undefined ? obj.boosters : []
-        obj.lastBooster = obj.lastBooster !== undefined ? obj.lastBooster : Date.now()
+        obj.coins = obj.coins !== undefined ? obj.coins : 10;
+        obj.collection = obj.collection !== undefined ? obj.collection : [];
+        obj.boosters = obj.boosters !== undefined ? obj.boosters : [twelveHoursAgo, twelveHoursAgo];
+        obj.lastBooster = obj.lastBooster !== undefined ? obj.lastBooster : Date.now();
+
 
         // Default values to hide protected values
         obj.password = obj.password !== undefined ? obj.password : "XXXXXXXXXX"
         obj.salt = obj.salt !== undefined ? obj.salt : "XXXXXXXXX"
 
         // Validate data types
-        const objNamesAndTypes = new Map(Object.entries(obj).map(([key, value]) => 
+        const objNamesAndTypes = new Map(Object.entries(obj).map(([key, value]) =>
             [key, typeof value]))
 
         if (!(attributsNamesAndTypes.size === objNamesAndTypes.size &&
-            Array.from(attributsNamesAndTypes.keys()).every((key) => 
+            Array.from(attributsNamesAndTypes.keys()).every((key) =>
                 attributsNamesAndTypes.get(key) === objNamesAndTypes.get(key)))) {
             throw new UserException('Invalid user object')
         }
@@ -122,7 +125,7 @@ class User {
         if (obj.name.trim() === '') {
             throw new UserException('Name is required')
         }
-        
+
         if (obj.password.trim() === '') {
             throw new UserException('Password is required')
         }
@@ -131,7 +134,7 @@ class User {
             throw new UserException('Salt is required')
         }
 
-        if (isNaN(obj.coins)|| obj.coins < 0) {
+        if (isNaN(obj.coins) || obj.coins < 0) {
             throw new UserException('Coins must be a valid positive number');
         }
 
@@ -143,7 +146,7 @@ class User {
             throw new UserException('Boosters array must contain at most 2 timestamps')
         }
 
-        if (isNaN(obj.lastBooster)|| obj.lastBooster < 0) {
+        if (isNaN(obj.lastBooster) || obj.lastBooster < 0) {
             throw new UserException('Timestamp must be a valid positive number');
         }
 
