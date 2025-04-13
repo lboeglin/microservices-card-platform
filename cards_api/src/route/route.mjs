@@ -70,8 +70,10 @@ router
         */
         try {
             const ids = request.body
+		const cards = await Promise.all(ids.map(async (id) => { return await cardController.getFromId(id) }))
+		console.log(cards)
             response.status(200).send(
-                ids.map((id) => { return cardController.getFromId(id) })
+		cards
             )
         } catch (e) {
             response.status(500).send("Error - " + e)

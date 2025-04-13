@@ -28,6 +28,7 @@ if (env == 'TEST') {
     await mongoose.connect(uri)
     console.log("Mongo on memory " + uri)
 } else {
+	console.log("Mongo full URL : " + mongoURL + '/' + mongoDB)
     await mongoose.connect(mongoURL + '/' + mongoDB)
     console.log("Mongo on " + mongoURL + '/' + mongoDB)
 }

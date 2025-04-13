@@ -12,7 +12,7 @@ const Config = {
 				multiple_images_src: "https://api.thecatapi.com/v1/images/search",
 				multiple_images_param: "limit",
 				api_key_param: "api_key",
-				api_key: "",
+				api_key: "live_MXqjJ7c9cU4L2FP7sl5JpV7ENGBZ13EFCd1nwUWRqNgkC81UncbzMcKtXMuSKNJd",
 				src_path: "url",
 				cdn_root: "", // The root path to where the images are stored in case we are given a relative path.
 				source_type: "cat"

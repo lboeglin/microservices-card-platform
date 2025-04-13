@@ -5,11 +5,13 @@
     "description": "The API that gives you cards.",
     "version": "1.0.0"
   },
-  "host": "localhost:3000/api/v0",
+  "host": "172.21.45.29:8080/api/v0",
   "basePath": "/",
+  "tags": [
+    "Cards"
+  ],
   "schemes": [
-    "http",
-    "https"
+    "http"
   ],
   "paths": {
     "/get-cards/{amount}": {
