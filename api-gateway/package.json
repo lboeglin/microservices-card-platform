@@ -2,7 +2,7 @@
   "name": "api-gateway",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.mjs",
   "scripts": {
     "start": "node server.mjs",
     "swagger": "node swagger.mjs",
@@ -11,7 +11,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
@@ -28,3 +28,4 @@
     "@types/swagger-ui-express": "^4.1.8"
   }
 }
+

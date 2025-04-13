@@ -1,4 +1,3 @@
-import fetch from 'node-fetch'
 import HttpsProxyAgent from 'https-proxy-agent'
 import dotenv from 'dotenv'
 
@@ -6,7 +5,7 @@ dotenv.config()
 
 const proxy = process.env.https_proxy
 
-let agent = null
+let defaultAgent = null
 if (proxy != undefined) {
     console.log(`Using proxy: ${proxy}`)
     agent = new HttpsProxyAgent(proxy)
@@ -18,7 +17,7 @@ else {
 
 const urlBase = process.env.CARD_SERVICE_URL+process.env.API_PATH
 
-const cardFetchDAO = {
+const cardFetchDAO = (fetch, agent = defaultAgent) => ({
     findOne : async (id) => {
         try {
             const url = new URL(urlBase+'/card-info')
@@ -86,5 +85,5 @@ const cardFetchDAO = {
             throw error
         }
     }
-}
+})
 export default cardFetchDAO
