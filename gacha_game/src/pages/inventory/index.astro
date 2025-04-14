@@ -1,0 +1,28 @@
+---
+import Button from "../../components/Button";
+import Card from "../../components/Card";
+import Inventory from "../../components/Inventory";
+import BasePage from "../../layouts/BasePage.astro";
+import { getInventory } from "../../util/serverRequests.js";
+import { Icon } from "astro-icon/components";
+
+if (!Astro.cookies.has("authorization")) {
+	return Astro.redirect("/login");
+}
+
+const cards = await getInventory(
+	Astro.cookies.get("authorization")?.json().accessToken,
+);
+
+if (!cards) {
+	return Astro.redirect("/login");
+}
+---
+
+<BasePage>
+	<div class="text-4xl sticky top-2 left-2 z-40">
+		<Button action="/"><Icon name="flowbite:arrow-left-outline" /></Button>
+	</div>
+	<h1 class="font-black text-6xl mb-4 drop-shadow-md">Inventaire</h1>
+	<Inventory cards={cards} client:load />
+</BasePage>

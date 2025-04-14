@@ -1,0 +1,87 @@
+---
+import BasePage from "../../layouts/BasePage.astro";
+import { login } from "../../util/serverRequests.js";
+
+let failed_attempt = false;
+
+if (Astro.request.method === "POST") {
+	try {
+		const data = await Astro.request.formData();
+		const credentials = {
+			name: data.get("name"),
+			password: data.get("password"),
+		};
+		const login_attempt = await login(credentials);
+		if (login_attempt !== null) {
+			Astro.cookies.set("authorization", login_attempt, { path: "/" });
+			return Astro.redirect("/");
+		} else {
+			failed_attempt = true;
+		}
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+let info = null;
+if (Astro.cookies.has("flash")) {
+	info = Astro.cookies.get("flash")?.value;
+	Astro.cookies.delete("flash", { path: "/login" });
+}
+---
+
+<BasePage>
+	<div class="flex flex-col gap-4 h-screen justify-center items-center">
+		<div
+			class="flex flex-col gap-4 py-6 px-8 rounded-2xl text-cyan-950 bg-blue-300/35 backdrop-blur-lg border border-cyan-950/70"
+		>
+			<div>
+				<h1 class="text-3xl font-bold">Connexion</h1>
+				<a href="/login/new-account" class="text-right text-cyan-700 underline"
+					>Je n'ai pas encore de compte</a
+				>
+			</div>
+			{
+				failed_attempt ? (
+					<div class="bg-red-300 border border-red-400 rounded p-2">
+						Identifiants invalides.
+					</div>
+				) : null
+			}
+			{
+				info ? (
+					<div class="bg-green-300 border border-green-400 rounded p-2">
+						{info}
+					</div>
+				) : null
+			}
+			<form class="flex flex-col gap-2" method="post">
+				<label for="username">Nom d'utilisateur</label>
+				<input
+					class="bg-blue-300 placeholder:text-cyan-800/80 rounded-full py-1 px-4"
+					type="text"
+					name="name"
+					placeholder="username39"
+					id="login-username"
+					required
+				/>
+				<label for="password">Mot de passe</label>
+				<input
+					class="bg-blue-300 placeholder:text-cyan-800/80 rounded-full py-1 px-4"
+					type="password"
+					name="password"
+					placeholder="very_securePa$$w0rd"
+					id="login-password"
+					required
+				/>
+				<input
+					class="bg-gradient-to-r from-blue-300 to-fuchsia-300 hover:from-teal-700 hover:to-sky-800 hover:text-amber-50 transition-colors rounded-2xl w-fit self-center p-3 mt-2 border border-emerald-700/30 hover:border-b-blue-300/70 cursor-pointer"
+					type="submit"
+					name="submit"
+					value="Se Connecter"
+					id="login-submit"
+				/>
+			</form>
+		</div>
+	</div>
+</BasePage>

@@ -1,0 +1,37 @@
+---
+import type { GetStaticPaths } from "astro";
+import GachaPuller from "../../components/GachaPuller";
+import BasePage from "../../layouts/BasePage.astro";
+import { buyBooster, openBooster } from "../../util/serverRequests";
+
+const { action } = Astro.params;
+
+if (!Astro.cookies.has("authorization")) {
+	return Astro.redirect("/login");
+}
+
+let cards = null;
+
+switch (action) {
+	case "buy":
+		cards = await buyBooster(
+			Astro.cookies.get("authorization")?.json().accessToken,
+		);
+		break;
+	case "booster":
+		cards = await openBooster(
+			Astro.cookies.get("authorization")?.json().accessToken,
+		);
+		break;
+	default:
+		return Astro.redirect("/");
+}
+
+if (!cards) {
+	return Astro.redirect("/gacha");
+}
+---
+
+<BasePage>
+	<GachaPuller client:load cards={cards} />
+</BasePage>

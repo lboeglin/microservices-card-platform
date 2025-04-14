@@ -1,0 +1,20 @@
+---
+import { Image } from "astro:assets";
+import Layout from "./Layout.astro";
+import Container from "./Container.astro";
+import background from "../../public/background.png";
+---
+
+<Layout>
+	<Image
+		class="-z-50 fixed w-screen h-screen object-cover"
+		loading="eager"
+		src={background}
+		alt=""
+	/>
+	<div class="container mx-auto p-6 bg-cyan-950/55 backdrop-blur-lg h-full">
+		<div class="text-sky-50">
+			<slot />
+		</div>
+	</div>
+</Layout>

@@ -1,0 +1,60 @@
+---
+import BasePage from "../layouts/BasePage.astro";
+import Button from "../components/Button";
+import { getUser } from "../util/serverRequests.js";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import cat from "../../public/cat.jpg";
+import banner from "../../public/gacha_banner.jpg";
+import HomeBanner from "../components/HomeBanner.jsx";
+
+if (!Astro.cookies.has("authorization")) {
+	return Astro.redirect("/login");
+}
+
+const userInfo = await getUser(
+	Astro.cookies.get("authorization")?.json().accessToken,
+);
+
+if (!userInfo) {
+	return Astro.redirect("/login");
+}
+
+const user = userInfo.name;
+---
+
+<BasePage>
+	<div
+		class="flex flex-row gap-2 p-2 bg-blue-300 border border-blue-100 rounded-3xl w-fit mb-2 text-2xl"
+	>
+		<Button title="Déconnexion" variant="dangerous" action="/logout"
+			><Icon name="flowbite:arrow-left-to-bracket-outline" /></Button
+		>
+		<Button title="Paramètres" action="/settings"
+			><Icon name="flowbite:cog-outline" width="24" height="24" /></Button
+		>
+	</div>
+	<div class="bg-blue-950/35 w-fit p-4 rounded-4xl">
+		<h1 class="text-6xl font-black drop-shadow-md">Bonjour {user} !</h1>
+		<p class="text-3xl">
+			Vous avez <span
+				class="bg-gradient-to-tr from-yellow-500 to-amber-300 text-amber-900 rounded px-1 border border-amber-100"
+				>{userInfo.coins}$</span
+			>
+		</p>
+	</div>
+	<a href="/inventory">
+		<HomeBanner
+			title="Inventaire"
+			description="Admirez votre collection de cartes Catcha en toute sa splendeur !"
+			image={cat.src}
+		/>
+	</a>
+	<a href="/gacha">
+		<HomeBanner
+			title="Gacha"
+			description="Obtenez des cartes nouvelles et exclusives, et agrandissez votre collection fulgurante !"
+			image={banner.src}
+		/>
+	</a>
+</BasePage>

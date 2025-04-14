@@ -2,6 +2,7 @@
   "name": "gacha_api",
   "version": "1.0.0",
   "description": "gacha_api",
+  "type": "module",
   "main": "server.mjs",
   "scripts": {
     "start": "node server.mjs",
