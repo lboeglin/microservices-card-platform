@@ -226,3 +226,4 @@ async function handleResponse(response) {
 }
 
 export default userFetchDAO
+
