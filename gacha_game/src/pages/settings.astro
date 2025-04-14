@@ -1,9 +1,13 @@
 ---
+import { Icon } from "astro-icon/components";
 import Button from "../components/Button";
 import BasePage from "../layouts/BasePage.astro";
 ---
 
 <BasePage>
+	<div class="text-4xl fixed top-2 left-2">
+		<Button action="/"><Icon name="flowbite:arrow-left-outline" /></Button>
+	</div>
 	<h1 class="text-6xl mb-2 font-black drop-shadow-md">Paramètres</h1>
 	<div class="bg-blue-950/55 p-4">
 		<div class="*:inline">
@@ -13,7 +17,6 @@ import BasePage from "../layouts/BasePage.astro";
 		</div>
 		<dialog
 			class="left-0 top-0 m-auto w-full h-full absolute bg-neutral-900/40"
-			open
 		>
 			<div
 				class="left-0 right-0 top-0 bottom-0 absolute h-fit m-auto flex flex-col gap-4 py-6 px-8 w-100 rounded-2xl text-cyan-950 bg-blue-300/35 backdrop-blur-lg border border-cyan-950/70"

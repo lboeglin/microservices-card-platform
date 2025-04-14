@@ -35,11 +35,36 @@ if (boostersAvailable === null) {
         </div>
         <div class="flex gap-4">
             <Button variant="golden" action="/gacha/pull-buy">
-                Acheter un booster (1$)
+                Acheter un booster (<b>4</b>$)
             </Button>
             <Button variant="golden" action="/gacha/pull-booster"
-                >Pull ({boostersAvailable} disponibles)</Button
+                >Pull (<b>{boostersAvailable}</b> disponibles)</Button
             >
         </div>
+        <div
+            id="loading-scrim"
+            style="visibility: hidden;"
+            class="absolute flex flex-col-reverse justify-center items-center bg-neutral-900/40 w-full h-full top-0 left-0"
+        >
+            <p>Chargement...</p>
+            <Icon class="size-32" name="svg-spinners:pulse-multiple" />
+        </div>
     </div>
+    <script is:inline>
+        const loading = (event) => {
+            const originalLoader = event.loader;
+            event.loader = async function () {
+                document.getElementById("loading-scrim").style =
+                    "visibility: visible";
+                await originalLoader();
+                document.getElementById("loading-scrim").style =
+                    "visibility: hidden";
+                document.removeEventListener(
+                    "astro:before-preparation",
+                    loading,
+                );
+            };
+        };
+        document.addEventListener("astro:before-preparation", loading);
+    </script>
 </BasePage>

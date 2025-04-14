@@ -81,7 +81,7 @@ export const openBooster = async (token) => {
 }
 
 export const buyBooster = async (token) => {
-	const response = await fetch(HOST + '/user/booster/buy/1', {
+	const response = await fetch(HOST + '/user/booster/buy/4', {
 		method: 'PUT',
 		headers: {
 			'Accept': 'application/json',

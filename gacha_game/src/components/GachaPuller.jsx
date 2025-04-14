@@ -33,7 +33,7 @@ export default function GachaPuller({ cards }) {
             )
         else
             return (
-                <div className="flex flex-col h-screen gap-4 justify-center">
+                <div className="flex flex-col h-screen gap-4 justify-center items-center">
                     <div className="flex flex-row gap-2 w-full justify-center">
                         {
                             cards.map((card) => {
@@ -45,7 +45,7 @@ export default function GachaPuller({ cards }) {
                             })
                         }
                     </div>
-                    <Button action="/gacha">
+                    <Button className="inline-block" action="/gacha">
                         Retourner au gacha
                     </Button>
                 </div>
