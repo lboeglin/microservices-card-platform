@@ -170,20 +170,20 @@ const userDAO = {
 
   sellCard: async (name, cardId) => {
     try {
-      const user = await userDAO.getUserByName(name)
+      const user = await MongoUser.findOne({ name: name })
       if (!user) {
-        return false
+        throw new Error("No user found")
       }
 
-      if (!user.collection.includes(cardId)) {
-        return false
+      if (!(cardId in user.collection)) {
+        throw new Error(`The user does not have this card`)
       }
-
-      user.collection = user.collection.filter((id) => id !== cardId)
+      
+      user.collection = user.collection.filter(id => id != cardId)
       user.coins += 1 // Value to be determined since we have rarity but for now leave them at 1
 
       await user.save()
-      return true
+      return user.coins
     } catch (error) {
       throw error
     }
@@ -198,7 +198,7 @@ const userDAO = {
 
       const collection = user.collection
       cards.forEach(cardId => {
-        if (collection.includes(cardId)) {
+        if (cardId in user.collection) {
           user.coins += 1 // Same problem with the sell card, value is currently placeholder
         } else {
           collection.push(cardId)
@@ -239,7 +239,7 @@ const userDAO = {
       if (user.coins < price) {
         return null
       }
-
+      
       user.coins = user.coins - price
       await user.save()
       return await userDAO.getUserByName(name)

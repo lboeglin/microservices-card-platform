@@ -222,8 +222,8 @@ router
             const username = extractNameFromToken(req)
             const cardId = req.params.id
             const result = await userController.sellCard(username, cardId)
-            if (result) {
-                return res.status(200).send({ message: "Card sold successfully" })
+            if (result != null) {
+                return res.status(200).send({ message: "Card sold successfully", coins: result })
             }
             res.status(400).send({ message: "Could not sell card" })
         } catch (error) {
@@ -342,7 +342,7 @@ router
             type: 'integer',
             description: 'Price of the booster to purchase'
         }
-        #swagger.description = 'Buys a booster using the user\'s coins.'
+        #swagger.description = 'Buys a booster using the user's coins.'
         */
         try {
             const name = extractNameFromToken(req)
@@ -360,7 +360,7 @@ router
 
             const result = await userController.buyBooster(name, price)
             if (result != null) {
-                return res.status(200).send({ message: "Booster bought successfully" })
+                return res.status(200).send({ message: "Booster bought successfully", coins: result.coins })
             }
             res.status(400).send({ message: "Failled to buy a booster" })
         } catch (error) {
