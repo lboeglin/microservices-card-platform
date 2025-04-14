@@ -2,8 +2,17 @@ import HttpsProxyAgent from 'https-proxy-agent'
 import dotenv from 'dotenv'
 dotenv.config()
 
+/**
+ * HTTPS proxy URL from environment variables.
+ * @type {string | undefined}
+ */
 const proxy = process.env.https_proxy
 
+/**
+ * Optional HTTPS agent for making requests through a proxy.
+ * If a proxy is configured, uses HttpsProxyAgent. Otherwise disables TLS verification.
+ * @type {HttpsProxyAgent | null}
+ */
 let agent = null
 if (proxy !== undefined) {
     console.log(`Using proxy: ${proxy}`)
@@ -13,8 +22,32 @@ if (proxy !== undefined) {
     console.log('Not using proxy')
 }
 
+/**
+ * Base URL for the user service API.
+ * @type {string}
+ */
 const urlBase = process.env.USER_SERVICE_URL + "/user-api"
 
+/**
+ * Factory function returning a DAO for user-related API interactions.
+ * 
+ * @param {typeof fetch} fetch - The fetch implementation to use.
+ * @returns {{
+ *   login: (credentials: Object) => Promise<Object>,
+ *   register: (userData: Object) => Promise<Object>,
+ *   refreshTokens: (refreshTokenData: Object) => Promise<Object>,
+ *   getUser: (jwt: string) => Promise<Object>,
+ *   updateUser: (jwt: string, userData: Object) => Promise<Object>,
+ *   deleteUser: (jwt: string) => Promise<Object>,
+ *   updatePassword: (jwt: string, passwordData: Object) => Promise<Object>,
+ *   getCollection: (jwt: string) => Promise<Object>,
+ *   sellCard: (jwt: string, cardId: string) => Promise<Object>,
+ *   addCard: (jwt: string, cardData: Object) => Promise<Object>,
+ *   getBooster: (jwt: string) => Promise<Object>,
+ *    useBooster: (jwt: string) => Promise<Object>,
+ *   buyBooster: (jwt: string, price: string | number) => Promise<Object>
+ * }}
+ */
 const userFetchDAO = (fetch) => ({
     login: async (credentials) => {
         const url = new URL(`${urlBase}/user/login`)
@@ -82,7 +115,14 @@ const userFetchDAO = (fetch) => ({
     },
 })
 
-// Helper functions
+/**
+ * Helper to send a POST request.
+ * 
+ * @param {URL} url - The endpoint URL.
+ * @param {Object} body - The JSON payload to send.
+ * @param {typeof fetch} fetch - The fetch implementation.
+ * @returns {Promise<Object>} The parsed JSON response.
+ */
 async function doPost(url, body, fetch) {
     try {
         const response = await fetch(url.toString(), {
@@ -98,6 +138,14 @@ async function doPost(url, body, fetch) {
     }
 }
 
+/**
+ * Helper to send an authenticated GET request.
+ * 
+ * @param {URL} url - The endpoint URL.
+ * @param {string} token - The Bearer token.
+ * @param {typeof fetch} fetch - The fetch implementation.
+ * @returns {Promise<Object>} The parsed JSON response.
+ */
 async function doAuthGet(url, token, fetch) {
     try {
         const response = await fetch(url.toString(), {
@@ -112,6 +160,15 @@ async function doAuthGet(url, token, fetch) {
     }
 }
 
+/**
+ * Helper to send an authenticated PUT request.
+ * 
+ * @param {URL} url - The endpoint URL.
+ * @param {string} token - The Bearer token.
+ * @param {Object|null} body - The JSON payload or null.
+ * @param {typeof fetch} fetch - The fetch implementation.
+ * @returns {Promise<Object>} The parsed JSON response.
+ */
 async function doAuthPut(url, token, body = null, fetch) {
     try {
         const response = await fetch(url.toString(), {
@@ -130,6 +187,14 @@ async function doAuthPut(url, token, body = null, fetch) {
     }
 }
 
+/**
+ * Helper to send an authenticated DELETE request.
+ * 
+ * @param {URL} url - The endpoint URL.
+ * @param {string} token - The Bearer token.
+ * @param {typeof fetch} fetch - The fetch implementation.
+ * @returns {Promise<Object>} The parsed JSON response.
+ */
 async function doAuthDelete(url, token, fetch) {
     try {
         const response = await fetch(url.toString(), {
@@ -144,6 +209,13 @@ async function doAuthDelete(url, token, fetch) {
     }
 }
 
+/**
+ * Parses and handles the HTTP response.
+ * 
+ * @param {Response} response - The fetch response object.
+ * @returns {Promise<Object>} Parsed JSON data.
+ * @throws Will throw an error if the response is not OK.
+ */
 async function handleResponse(response) {
     if (!response.ok) {
         const errorBody = await response.text()
@@ -154,30 +226,3 @@ async function handleResponse(response) {
 }
 
 export default userFetchDAO
-
-// trying register hard coded here but should be in a test file
-const testRegister = async () => {
-    try {
-        const newUser = {
-            name: 'samueiojdfsqijosqdoijdsqldsqqsjo',
-            password: 'supersecurepassword'
-        }
-
-        const result = await userFetchDAO.register(newUser)
-        console.log('Register success:', result)
-
-        const loginResult = await userFetchDAO.login({
-            name: newUser.name,
-            password: newUser.password
-        })
-        console.log('Login result:', loginResult)
-
-        const jwt = loginResult.accessToken
-        console.log('JWT:', jwt)
-        const userInfo = await userFetchDAO.getUser(jwt)
-        console.log('User info:', userInfo)
-
-    } catch (err) {
-        console.error('Register failed:', err.message)
-    }
-}

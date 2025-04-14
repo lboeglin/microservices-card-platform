@@ -236,6 +236,16 @@ describe('cardFetchDAO', () => {
             assert.strictEqual(typeof cards[0].rarity, 'number')
             assert.ok(cards[0].image)
         }) 
+
+        it('should fetch all existing cards', async () => {
+            const cards = await dao.findAll()
+            assert.ok(Array.isArray(cards))
+            assert.ok(cards.length > 0)
+            assert.strictEqual(typeof cards[0].name, 'string')
+            assert.strictEqual(typeof cards[0].id, 'number')
+            assert.strictEqual(typeof cards[0].rarity, 'number')
+            assert.ok(cards[0].image)
+        })
     })
 })
 

@@ -3,8 +3,17 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+/**
+ * HTTPS proxy URL from environment variables.
+ * @type {string | undefined}
+ */
 const proxy = process.env.https_proxy
 
+/**
+ * Default HTTPS agent used for requests.
+ * If a proxy is defined, uses `HttpsProxyAgent`; otherwise disables TLS verification.
+ * @type {HttpsProxyAgent | null}
+ */
 const defaultAgent = proxy !== undefined
     ? (() => {
         console.log(`Using proxy: ${proxy}`)
@@ -16,9 +25,32 @@ const defaultAgent = proxy !== undefined
         return null
     })()
 
+/**
+ * Base URL for the card service API, composed from environment variables.
+ * @type {string}
+ */
 const urlBase = process.env.CARD_SERVICE_URL + process.env.API_PATH
 
+/**
+ * Data Access Object (DAO) for interacting with a card service API.
+ * Provides methods to fetch card data using HTTP requests.
+ * 
+ * @param {typeof fetch} fetch - The fetch implementation to use.
+ * @param {HttpsProxyAgent | null} [agent=defaultAgent] - Optional HTTPS agent for proxy support.
+ * @returns {{
+ *   findOne: (id: string) => Promise<Object>,
+ *   findCollection: (collectionIds: string[]) => Promise<Object>,
+ *   findMany: (number: number) => Promise<Object>,
+ *   findAll: () => Promise<Object>
+ * }}
+ */
 const cardFetchDAO = (fetch, agent = defaultAgent) => ({
+    /**
+     * Fetches information for a single card by ID.
+     * 
+     * @param {string} id - The ID of the card to fetch.
+     * @returns {Promise<Object>} The card information.
+     */
     findOne: async (id) => {
         try {
             const url = new URL(`${urlBase}/get-card-info/${id}`)
@@ -33,6 +65,12 @@ const cardFetchDAO = (fetch, agent = defaultAgent) => ({
         }
     },
 
+    /**
+     * Fetches information for a collection of cards.
+     * 
+     * @param {string[]} collectionIds - An array of collection IDs to fetch.
+     * @returns {Promise<Object>} The collection information.
+     */
     findCollection: async (collectionIds) => {
         try {
             const url = new URL(`${urlBase}/get-collection-info`)
@@ -52,6 +90,12 @@ const cardFetchDAO = (fetch, agent = defaultAgent) => ({
         }
     },
 
+    /**
+     * Fetches a specified number of cards.
+     * 
+     * @param {number} number - The number of cards to fetch.
+     * @returns {Promise<Object>} The card data.
+     */
     findMany: async (number) => {
         try {
             const url = new URL(`${urlBase}/get-cards/${number}`)
@@ -66,6 +110,11 @@ const cardFetchDAO = (fetch, agent = defaultAgent) => ({
         }
     },
 
+    /**
+     * Fetches all existing card data.
+     * 
+     * @returns {Promise<Object>} All card information.
+     */
     findAll: async () => {
         try {
             const url = new URL(`${urlBase}/get-existing-cards`)
@@ -82,3 +131,4 @@ const cardFetchDAO = (fetch, agent = defaultAgent) => ({
 })
 
 export default cardFetchDAO
+
