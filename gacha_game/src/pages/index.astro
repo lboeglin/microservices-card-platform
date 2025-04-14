@@ -1,7 +1,7 @@
 ---
 import BasePage from "../layouts/BasePage.astro";
 import Button from "../components/Button";
-import { getUser, login } from "../util/serverRequests";
+import { getUser, login } from "../util/serverRequests.js";
 
 if (!Astro.cookies.has("authorization")) {
 	return Astro.redirect("/login");
@@ -11,6 +11,10 @@ const userInfo = await getUser(
 	Astro.cookies.get("authorization")?.json().accessToken,
 );
 
+if (!userInfo) {
+	return Astro.redirect("/login");
+}
+
 const user = userInfo.name;
 ---
 
@@ -18,4 +22,5 @@ const user = userInfo.name;
 	<h1 class="text-3xl font-black drop-shadow-lg">Hello {user} !</h1>
 	<Button href="/inventory">Inventory</Button>
 	<Button href="/gacha" variant="golden">Gacha</Button>
+	<Button href="/logout">Se Déconnecter</Button>
 </BasePage>

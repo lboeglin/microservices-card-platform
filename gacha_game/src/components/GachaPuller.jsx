@@ -1,8 +1,9 @@
 'use client'
 import { useState, useEffect } from "react";
 import Card from "./Card";
+import { openBooster } from "../util/serverRequests";
 
-export default function GachaPuller() {
+export default function GachaPuller({ token }) {
     const [cards, setCards] = useState([]);
     const [revealedPack, setRevealedPack] = useState([]);
     const [firstPull, setPulling] = useState(true);
@@ -14,9 +15,8 @@ export default function GachaPuller() {
     useEffect(() => {
         const fetchCards = async () => {
             try {
-                const response = await fetch('http://172.21.45.29:8080/api/v0/get-cards/6');
-                if (!response.ok) throw new Error('Failed to fetch cards');
-                const data = await response.json();
+                const data = await openBooster(token);
+                console.log(data)
                 setCards(data);
                 setPulledCats(data.slice(0, 1));
                 setRevealedPack(Array(data.length).fill(false));
@@ -85,11 +85,11 @@ export default function GachaPuller() {
                                 </button>
                                 <div className="grid grid-cols-3 grid-rows-2 gap-3">
                                     {pulledCats.map((cat, index) => (
-                                        <Card 
-                                            key={index} 
-                                            artwork={cat.image} 
-                                            name={cat.name} 
-                                            rarity={cat.rarity} 
+                                        <Card
+                                            key={index}
+                                            artwork={cat.image}
+                                            name={cat.name}
+                                            rarity={cat.rarity}
                                         />
                                     ))}
                                 </div>

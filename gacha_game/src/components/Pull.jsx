@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import Pack from './Pack.jsx';
+import Pack from './GachaPuller.jsx';
+import Button from './Button.jsx';
 
 export default function Pull() {
   const [isPulled, setIsPulled] = useState(false)
@@ -18,15 +19,12 @@ export default function Pull() {
             Gacha title
           </h1>
           <div className="absolute bottom-4 right-4 flex gap-4">
-            <button className="px-16 py-3 bg-amber-200 text-white rounded-lg text-lg font-semibold hover:bg-amber-300">
-              Buy
-            </button>
-            <button
-              className="px-16 py-3 bg-amber-200 text-white rounded-lg text-lg font-semibold hover:bg-amber-300"
-              onClick={handlePull}
-            >
+            <Button variant='golden'>
+              Acheter un booster (1$)
+            </Button>
+            <Button variant='golden' href='/gacha/pull'>
               Pull
-            </button>
+            </Button>
           </div>
         </div>
       )}

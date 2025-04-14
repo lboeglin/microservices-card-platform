@@ -5,9 +5,10 @@
  * 	Go back to Home Page
  * </Button>
  */
-const Button = ({ href, children, variant = 'normal' }) => {
+const Button = ({ href = "", onclick = undefined, children, variant = 'normal' }) => {
 	return <a
 		href={href}
+		onClick={onclick}
 		className={
 			variant ==
 				'golden' ?

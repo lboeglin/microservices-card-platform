@@ -1,0 +1,11 @@
+---
+import GachaPuller from "../../components/GachaPuller";
+import BasePage from "../../layouts/BasePage.astro";
+---
+
+<BasePage>
+	<GachaPuller
+		client:load
+		token={Astro.cookies.get("authorization")?.json().accessToken}
+	/>
+</BasePage>

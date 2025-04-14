@@ -1,15 +1,15 @@
-const HOST = import.meta.env.PROXY_HOST
+const HOST = import.meta.env.PUBLIC_PROXY_HOST
 
 export const login = async (credentials) => {
-	return await authenticationPost(HOST + '/user/login')
+	return await authenticationPost(HOST + '/user/login', credentials)
 }
 
 export const register = async (credentials) => {
-	return await authenticationPost(HOST + '/user/register')
+	return await authenticationPost(HOST + '/user/register', credentials)
 }
 
 // Common POST request for the login and register paths.
-const authenticationPost = async (path) => {
+const authenticationPost = async (path, credentials) => {
 	const response = await fetch(path, {
 		method: 'POST',
 		headers: {
@@ -52,10 +52,30 @@ export const getInventory = async (token) => {
 }
 
 export const claimBooster = async (token) => {
-
+	const response = await fetch(HOST + '/user/booster/use', {
+		method: 'PUT',
+		headers: {
+			'Accept': 'application/json',
+			'Authorization': `Bearer ${token}`
+		}
+	})
+	if (response.ok) {
+		return await response.json()
+	}
+	return null
 }
 
 // do the gacha roll
 export const openBooster = async (token) => {
-
+	const response = await fetch(HOST + '/user/booster/use', {
+		method: 'PUT',
+		headers: {
+			'Accept': 'application/json',
+			'Authorization': `Bearer ${token}`
+		}
+	})
+	if (response.ok) {
+		return await response.json()
+	}
+	return null
 }
