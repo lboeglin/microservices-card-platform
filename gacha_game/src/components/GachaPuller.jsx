@@ -12,10 +12,7 @@ export default function GachaPuller({ cards }) {
     };
 
     const skipPull = () => {
-        setPulledCats(cards);
-        setPulling(false);
-        setLast(true);
-        setRevealedPack(Array(cards.length).fill(true));
+        setCurrentCard(cards.length)
     };
 
     if (pulling) {
@@ -29,6 +26,12 @@ export default function GachaPuller({ cards }) {
                         onClick={() => { setCurrentCard(currentCard + 1) }}
                     />
                     <p className="text-black/75">Cliquez sur la carte pour continuer</p>
+                <Button
+                    action="/gacha"
+                    className="absolute top-4 right-4"
+                    onClick={skipPull}>
+                    Passer l'animation
+                </Button>
                 </div>
             )
         else
