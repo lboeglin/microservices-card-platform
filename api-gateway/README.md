@@ -1,3 +1,43 @@
-# Proxy - Point d'Entrée du Système
+# API Gateway
 
-Le **proxy** dans cette architecture logicielle sert de point d'entrée centralisé pour toutes les communications entre les micro-services. Il agit comme un intermédiaire qui redirige les requêtes HTTP vers les services appropriés tout en appliquant des règles de sécurité et de gestion des accès. Le rôle du proxy est de simplifier les interactions avec le système en exposant une interface unique aux clients tout en masquant la complexité interne du réseau de micro-services. En tant que couche d'abstraction, il permet également de gérer les aspects de scalabilité, de répartition de charge et de supervision. Chaque interaction avec le proxy est soigneusement testée et documentée pour garantir son bon fonctionnement et sa facilité de déploiement sur les VM de l'IUT.²
+Ce dépôt correspond à l’API Gateway (ou proxy) de l’application web de collection de cartes. Cette passerelle sert d’unique point d’entrée pour les clients et centralise l’accès à différents microservices (utilisateur et carte). Elle assure également la sécurité, la gestion des tokens et le routage des requêtes.
+
+## Sommaire
+
+- [Fonctionnalités](#fonctionnalités)
+- [Architecture](#architecture)
+- [Installation](#installation)
+- [Utilisation](#utilisation)
+- [Déploiement](#déploiement)
+- [Tests](#tests)
+- [Problèmes connus](#problèmes-connus)
+
+## Fonctionnalités
+
+- Routage des requêtes vers les microservices (utilisateur, cartes)
+- Authentification par JWT et gestion des refresh tokens
+- Intégration avec le système de boosters et de collection de cartes
+- Communication HTTP avec les services via `fetch`
+
+## Architecture
+
+L'API Gateway repose sur un serveur Express qui interagit avec plusieurs microservices en fonction des routes appelées. Elle centralise :
+
+- Les opérations d'identification/authentification
+- Les actions liées aux utilisateurs et cartes (collection, boosters, etc.)
+- Les échanges sécurisés avec des jetons JWT
+
+## Installation
+
+### Prérequis
+
+- Node.js >= 18
+- Microservices accessibles et configurés
+- Fichier `.env` avec les variables nécessaires (ex : `USER_SERVICE_URL`, `JWT_SECRET`, etc.)
+
+### Étapes
+
+```bash
+cd api-gateway 
+npm install
+npm run start & disown
