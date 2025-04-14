@@ -323,7 +323,7 @@ router
 
             const result = await userController.useBooster(name)
             if (result != null) {
-                return res.status(200).send({ message: "Booster opened" })
+                return res.status(200).send(result)
             }
             res.status(400).send({ message: "Failed to open booster" })
         } catch (error) {
@@ -350,7 +350,7 @@ router
             if (!user) {
                 return res.status(400).send({ message: "User not found" })
             }
-            if (user.coin <= 0) {
+            if (user.coins <= 0) {
                 return res.status(400).send({ message: "Coins cannot be 0 or less" })
             }
             const price = req.params.price || 1

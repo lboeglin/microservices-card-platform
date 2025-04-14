@@ -103,7 +103,7 @@ class User {
         // Default values
         obj.coins = obj.coins !== undefined ? obj.coins : 10;
         obj.collection = obj.collection !== undefined ? obj.collection : [];
-        obj.boosters = Array.isArray(obj.boosters) && obj.boosters.length > 0 ? obj.boosters : [twelveHoursAgo, twelveHoursAgo]; 
+        obj.boosters = obj.boosters !== undefined && obj.boosters.length  > 0  ? obj.boosters : [twelveHoursAgo, twelveHoursAgo]; 
         obj.lastBooster = obj.lastBooster !== undefined ? obj.lastBooster : Date.now();
 
 
