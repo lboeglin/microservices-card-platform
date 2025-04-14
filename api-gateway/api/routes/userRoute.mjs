@@ -9,7 +9,7 @@ const userRouter = express.Router()
 const getJwtFromRequest = (req) => req.headers['authorization']?.split(' ')[1]
 
 // ------------------------
-// 🚪 Public Routes
+// Public Routes
 // ------------------------
 
 userRouter
@@ -113,7 +113,7 @@ userRouter
     }
     */
     try {
-      const result = await userController.refreshTokens(req.body)
+      const result = await userController.refreshTokens(req.headers['authorization'].split(' ')[1])
       res.status(200).json(result)
     } catch (err) {
       res.status(400).json({ message: err.message })
@@ -121,7 +121,7 @@ userRouter
   })
 
 // ------------------------
-// 🔐 Auth-protected Routes
+// Auth-protected Routes
 // ------------------------
 
 userRouter
