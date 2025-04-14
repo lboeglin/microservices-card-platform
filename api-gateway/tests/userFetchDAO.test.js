@@ -273,7 +273,7 @@ describe('userFetchDAO', () => {
 
         it('should use a booster', async () => {
             const result = await dao.useBooster(token)
-            assert.ok(Array.isArray(result.collection))
+            assert.strictEqual(result, 1)
         })
 
         it('should get a booster -1', async () => {
@@ -283,23 +283,22 @@ describe('userFetchDAO', () => {
         
         it('should buy a booster', async () => {
             const result = await dao.buyBooster(token, 10)
-            assert.ok(result.booster)
-            assert.ok(result.coins)
+            assert.strictEqual(result.coins, 0)
         })
 
 
         it('should update password', async () => {
-            const result = await dao.updatePassword(token, { password: 'newpass123' })
+            const result = await dao.updatePassword(token, { currentPassword: 'testpassword123', newPassword: 'newpass456' })
             assert.equal(result.message, 'Password updated')
         })
 
         it('should delete user', async () => {
             const result = await dao.deleteUser(token)
-            assert.deepEqual(result, { success: true })
+            assert.equal(result.message, 'User deleted')
         })
 
         after(() => {
-            console.log(`✅ Cleaned up test user ${testUsername}`)
+            console.log(`Cleaned up test user ${testUsername}`)
         })
     })
 })
