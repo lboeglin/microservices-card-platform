@@ -21,4 +21,10 @@ router.use('/user', (req, res, next) => {
 // Use the user and card routers
 router.use('/user', userRouter)
 
+router
+    .route('/')
+    .options((req, res) => {
+        res.status(204)
+    })
+
 export default router
