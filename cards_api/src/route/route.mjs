@@ -48,7 +48,8 @@ router
         }
          */
         try {
-            const id = Number(request.params.id)
+            const id = Number(request.params.id) 
+
             response.status(200).send(await cardController.getFromId(id))
         } catch (e) {
             response.status(500).send("Error - " + e)

@@ -1,7 +1,7 @@
 'use strict'
 
 import test, { suite } from 'node:test'
-import Card, { CARD_RARITY } from '../../src/model/Card.mjs'
+import Card, { CARD_RARITY } from '../src/model/Card.mjs'
 import assert from 'node:assert'
 
 suite('Card Creation Tests', () => {

@@ -5,10 +5,19 @@ import resourceFetcherDao from "../dao/ResourceFetcherDao.mjs";
 import Card, { CARD_RARITY, getRarity } from "../model/Card.mjs";
 
 const cardController = {
+    /**
+     * Returns all cards stored in the database.
+     * @returns {Promise<Card[]>} An array of all stored cards.
+     */
     getAll: async () => {
         return await cardDao.getAllCards()
     },
 
+    /**
+     * Returns a single card by its ID.
+     * @param {number} id - The ID of the card to retrieve.
+     * @returns {Promise<Card|null>} The card with the specified ID, or null if not found.
+     */
     getFromId: async (id) => {
         return await cardDao.getCard(id)
     },
@@ -52,7 +61,22 @@ const cardController = {
         return cards
     },
 
+    /**
+     * Returns an `amount` of cards filtered by type and rarity.
+     * Cards are retrieved from the database using the given filters.
+     * @param {number} amount - Number of cards to retrieve.
+     * @param {string} type - The desired card type.
+     * @param {number} rarityMin - Minimum rarity value.
+     * @param {number} rarityMax - Maximum rarity value.
+     * @returns {Promise<Card[]>} An array of cards matching the filters.
+     */
     getRandomCardsFiltered: async (amount, type, rarityMin, rarityMax) => {
+        const cards = []
+        for (let i = 0; i < amount; i++) {
+            cards.push(cardDao.getCardWithFilter(type, rarityMin, rarityMax))
+        }
+        return cards
+    },    getRandomCardsFiltered: async (amount, type, rarityMin, rarityMax) => {
         const cards = []
         for (let i = 0; i < amount; i++) {
             cards.push(cardDao.getCardWithFilter(type, rarityMin, rarityMax))
