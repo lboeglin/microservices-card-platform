@@ -1,26 +1,21 @@
 ---
-import { isLoggedIn } from "../util/login";
 import BasePage from "../layouts/BasePage.astro";
-import Button from "../components/Button.astro";
+import Button from "../components/Button";
+import { getUser, login } from "../util/serverRequests";
 
-const cookie = Astro.request.headers.get("cookie");
-
-// If the user is not logged in, redirect them to the login page
-if (!isLoggedIn(cookie)) {
+if (!Astro.cookies.has("authorization")) {
 	return Astro.redirect("/login");
 }
 
-const user = "Albedo";
+const userInfo = await getUser(
+	Astro.cookies.get("authorization")?.json().accessToken,
+);
+
+const user = userInfo.name;
 ---
 
 <BasePage>
-	<div class="flex">
-		<Button>0</Button>
-		<Button>1</Button>
-		<Button>2</Button>
-	</div>
 	<h1 class="text-3xl font-black drop-shadow-lg">Hello {user} !</h1>
-	<Button href="/login">Login page</Button>
 	<Button href="/inventory">Inventory</Button>
-	<Button href="/gacha">Gacha</Button>
+	<Button href="/gacha" variant="golden">Gacha</Button>
 </BasePage>

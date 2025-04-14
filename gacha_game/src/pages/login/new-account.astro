@@ -1,7 +1,6 @@
 ---
-import { undefined } from "astro:schema";
 import BasePage from "../../layouts/BasePage.astro";
-import { login } from "../../util/serverRequests";
+import { register } from "../../util/serverRequests";
 
 let failed_attempt = false;
 
@@ -12,22 +11,18 @@ if (Astro.request.method === "POST") {
 			name: data.get("name"),
 			password: data.get("password"),
 		};
-		const login_attempt = await login(credentials);
-		if (login_attempt !== null) {
-			Astro.cookies.set("authorization", login_attempt, { path: "/" });
-			return Astro.redirect("/");
+		const register_attempt = await register(credentials);
+		if (register_attempt !== null) {
+			Astro.cookies.set("flash", "Compte créé avec succès !", {
+				path: "/login",
+			});
+			return Astro.redirect("/login");
 		} else {
 			failed_attempt = true;
 		}
 	} catch (error) {
 		console.error(error);
 	}
-}
-
-let info = null;
-if (Astro.cookies.has("flash")) {
-	info = Astro.cookies.get("flash")?.value;
-	Astro.cookies.delete("flash", { path: "/login" });
 }
 ---
 
@@ -37,22 +32,12 @@ if (Astro.cookies.has("flash")) {
 			class="flex flex-col gap-4 py-6 px-8 rounded-2xl text-cyan-950 bg-blue-300/35 backdrop-blur-lg border border-cyan-950/70"
 		>
 			<div>
-				<h1 class="text-3xl font-bold">Connexion</h1>
-				<a href="/login/new-account" class="text-right"
-					>Je n'ai pas encore de compte</a
-				>
+				<h1 class="text-3xl font-bold">Créer un compte</h1>
 			</div>
 			{
 				failed_attempt ? (
 					<div class="bg-red-300 border border-red-400 rounded p-2">
-						Identifiants invalides.
-					</div>
-				) : null
-			}
-			{
-				info ? (
-					<div class="bg-green-300 border border-green-400 rounded p-2">
-						{info}
+						Un utilisateur avec ce nom existe déjà.
 					</div>
 				) : null
 			}
@@ -79,7 +64,7 @@ if (Astro.cookies.has("flash")) {
 					class="bg-gradient-to-r from-blue-300 to-fuchsia-300 hover:from-teal-700 hover:to-sky-800 hover:text-amber-50 transition-colors rounded-2xl w-fit self-center p-3 mt-2 border border-emerald-700/30 hover:border-b-blue-300/70 cursor-pointer"
 					type="submit"
 					name="submit"
-					value="Se Connecter"
+					value="Valider"
 					id="login-submit"
 				/>
 			</form>

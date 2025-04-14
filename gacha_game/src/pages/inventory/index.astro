@@ -1,34 +1,43 @@
 ---
-import Button from "../../components/Button.astro";
+import Button from "../../components/Button";
 import Card, { Rarity } from "../../components/Card";
 import BasePage from "../../layouts/BasePage.astro";
+import { getInventory } from "../../util/serverRequests";
+
+if (!Astro.cookies.has("authorization")) {
+	return Astro.redirect("/login");
+}
 
 const cards = [
 	{
 		name: "Ichika",
-		artwork:
+		image:
 			"https://static.wikitide.net/projectsekaiwiki/1/17/Charsel-ichika.png",
 		rarity: Rarity.SUPER_RARE,
 	},
 	{
 		name: "Saki",
-		artwork:
-			"https://static.wikitide.net/projectsekaiwiki/9/9e/Charsel-saki.png",
+		image: "https://static.wikitide.net/projectsekaiwiki/9/9e/Charsel-saki.png",
 		rarity: Rarity.SUPER_RARE,
 	},
 	{
 		name: "Shiho",
-		artwork:
+		image:
 			"https://static.wikitide.net/projectsekaiwiki/7/79/Charsel-shiho.png",
 		rarity: Rarity.SUPER_RARE,
 	},
 	{
 		name: "Honami",
-		artwork:
+		image:
 			"https://static.wikitide.net/projectsekaiwiki/1/19/Charsel-honami.png",
 		rarity: Rarity.SUPER_RARE,
 	},
 ];
+
+const fetched_cards = await getInventory(
+	Astro.cookies.get("authorization")?.json().accessToken,
+);
+console.log(fetched_cards);
 ---
 
 <BasePage>
@@ -40,7 +49,7 @@ const cards = [
 				<Card
 					client:visible
 					name={card.name}
-					artwork={card.artwork}
+					artwork={card.image}
 					rarity={card.rarity}
 				/>
 			))
