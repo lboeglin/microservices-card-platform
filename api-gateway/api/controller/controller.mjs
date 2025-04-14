@@ -38,8 +38,8 @@ const userController = {
      * @param {Object} refreshTokenData - Refresh token payload.
      * @returns {Promise<{accessToken: string, refreshToken: string}>}
      */
-    refreshTokens: async (jwt, refreshTokenData) => {
-        return await userDao.refreshTokens(jwt, refreshTokenData)
+    refreshTokens: async (refreshTokenData) => {
+        return await userDao.refreshTokens(refreshTokenData)
     },
 
     /**

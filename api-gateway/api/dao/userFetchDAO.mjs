@@ -59,7 +59,7 @@ const userFetchDAO = (fetch) => ({
         return doPost(url, userData, fetch)
     },
 
-    refreshTokens: async (jwt, refreshToken) => {
+    refreshTokens: async (refreshToken) => {
         const url = new URL(`${urlBase}/user/refresh-tokens`)
         return doAuthPost(url, refreshToken, null, fetch)
     },

@@ -63,7 +63,7 @@ describe('userController (integration tests)', () => {
   })
 
   it('should refresh tokens', async () => {
-    const refreshed = await userController.refreshTokens(jwt, refreshToken)
+    const refreshed = await userController.refreshTokens(refreshToken)
     assert.ok(refreshed.accessToken)
     assert.ok(refreshed.refreshToken)
     jwt = refreshed.accessToken
