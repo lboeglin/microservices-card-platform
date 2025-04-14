@@ -11,317 +11,43 @@
     "http"
   ],
   "paths": {
-    "/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/user/login": {
       "post": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/register": {
-      "post": {
-        "description": "",
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/refresh-tokens": {
-      "post": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      },
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/password": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/collection": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/sell-card/{id}": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/addCard": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/booster": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/booster/use": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/user/booster/buy/{price}": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "price",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          }
-        }
-      }
-    },
-    "/card/card-info/{id}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/card/get-cards/{number}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "number",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/card/collection-info": {
-      "post": {
-        "description": "",
+        "description": "Authenticate user and return JWT for further requests",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
+            "description": "User credentials",
             "schema": {
               "type": "object",
               "properties": {
-                "collection": {
-                  "example": "any"
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "user1"
+                    }
+                  }
+                },
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "password123"
+                    }
+                  }
                 }
               }
             }
@@ -329,10 +55,850 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "User authenticated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "jwt-token"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           },
-          "500": {
-            "description": "Internal Server Error"
+          "400": {
+            "description": "User authentication failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid credentials"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/register": {
+      "post": {
+        "description": "Register a new user and return a success message if the username is available",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "User registration details",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "user1"
+                    }
+                  }
+                },
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "password123"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "User registered successfully"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "User registration failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "User already exists"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/refresh-tokens": {
+      "post": {
+        "description": "Refresh JWT tokens using refresh token",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Refresh token",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "refreshToken": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "refresh-token"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tokens refreshed successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "new-jwt-token"
+                    }
+                  }
+                },
+                "refreshToken": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "new-refresh-token"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Token refresh failed",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid refresh token"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/": {
+      "get": {
+        "description": "Get user details using JWT",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "integer"
+                    },
+                    "example": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  }
+                },
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "user1"
+                    }
+                  }
+                },
+                "collection": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to retrieve user details",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid JWT"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Update user details using JWT",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "User details to update",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "newUserName"
+                    }
+                  }
+                },
+                "password": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "newPassword"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "User updated successfully"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to update user details",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid JWT"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete user using JWT",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "User deleted successfully"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to delete user",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid JWT"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/password": {
+      "put": {
+        "description": "Update user password using JWT",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "New password details",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "currentPassword": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "oldPassword"
+                    }
+                  }
+                },
+                "newPassword": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "newPassword"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User password updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Password updated successfully"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to update password",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid JWT"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/collection": {
+      "get": {
+        "description": "Get user collection using JWT",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User collection retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "collection": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to retrieve user collection",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid JWT"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/sell-card/{id}": {
+      "put": {
+        "description": "Sell a card using JWT",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "Card ID to sell"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Card sold successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Card sold successfully"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to sell card",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid JWT"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/booster": {
+      "put": {
+        "description": "Get booster using JWT",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Booster retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "booster": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "object"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to retrieve booster",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid JWT"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/booster/use": {
+      "put": {
+        "description": "Use booster using JWT",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Booster used successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "cards": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "array"
+                    },
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "example": "object"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to use booster",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "example": "string"
+                    },
+                    "example": {
+                      "type": "string",
+                      "example": "Invalid JWT"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
           }
         }
       }
