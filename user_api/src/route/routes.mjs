@@ -292,7 +292,7 @@ router
                 let numberOfBooster = boosters.length
                 if (timeDifference >= twelveHours && numberOfBooster < 2) {
                     numberOfBooster = await userController.claimBooster(name, currentTime)
-                }
+                }               
                 return res.status(200).send(numberOfBooster)
             }
 
@@ -318,7 +318,7 @@ router
             }
 
             if (user.boosters.length < 1) {
-                return res.status(400).send({ message: "No booster ready to be oponed " })
+                return res.status(400).send({ message: "No booster ready to be opened" })
             }
 
             const result = await userController.useBooster(name)

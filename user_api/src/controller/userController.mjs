@@ -29,7 +29,7 @@ const userController = {
 
     getCollection: async (name) => {
         const user = await userDAO.getUserByName(name)
-        return user ? user.collection : [] 
+        return user ? user.collection : user
     },
 
     sellCard: async (name, cardId) => {

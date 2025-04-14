@@ -149,10 +149,12 @@ const userDAO = {
 
   updatePassword: async (name, currentPassword, newPassword) => {
     try {
-      const user = await userDAO.loginUser(name, currentPassword)
-      if (!user) {
+      const check = await userDAO.loginUser(name, currentPassword)
+      if (!check) {
         return null
       }
+
+      const user = await MongoUser.findOne({ name: name })
       const newSalt = crypto.randomBytes(128).toString("base64")
       const newHashedPassword = await hashPassword(newPassword, newSalt)
 
@@ -214,7 +216,7 @@ const userDAO = {
     try {
       const user = await MongoUser.findOne({ name: name })
       if (!user) {
-        return -1
+        throw new Error("No user found")
       }
       if (user.boosters.length == 2) {
         throw new Error("Max 2 booster claimed per user")
@@ -254,7 +256,7 @@ const userDAO = {
       }
       
       if (user.boosters.length < 1) {
-        throw new Error(`You currently have no booster available : ${user}`)
+        throw new Error(`You currently have no booster available`)
       }
 
       user.boosters.shift()

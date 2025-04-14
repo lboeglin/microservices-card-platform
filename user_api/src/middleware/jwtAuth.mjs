@@ -47,6 +47,9 @@ export function authenticateRefreshToken(req, res, next) {
 
 export function extractNameFromToken(req) {
     const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+        throw new Error("No token found")
+    }
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
