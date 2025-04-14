@@ -43,6 +43,14 @@ describe("Test de l'application", function () {
         assert.deepEqual(response.body, { message: "Username already taken or failed to register" })
     })
 
+    it("POST /user/register with invalid argumetn", async () => {
+        const response = await requestWithSupertest.post("/user-api/use/register")
+            .set('Content-type', 'application/json')
+            .send({ wrong: 'JoJo',value: 'pass' })
+        assert.equal(response.status, 400)
+        assert.deepEqual(response, { message: 'Username and password are required'})
+    })
+
     it("POST /user/login login as a valid user", async () => {
         const response = await requestWithSupertest.post("/user-api/user/login")
             .set('Content-type', 'application/json')
@@ -64,22 +72,24 @@ describe("Test de l'application", function () {
 
     })
 
-    it("POST /user/refresh-tokens should refresh tokens", async () => {
+    it("POST /user/refresh-tokens refresh tokens", async () => {
         const loginRes = await requestWithSupertest.post("/user-api/user/login")
             .send({ name: "JoJo", password: "pass" })
 
         const refreshToken = loginRes.body.refreshToken
 
-        const res = await requestWithSupertest.post("/user-api/user/refresh-tokens")
+        const response = await requestWithSupertest.post("/user-api/user/refresh-tokens")
             .set('Authorization', `Bearer ${refreshToken}`)
 
-        assert.equal(res.status, 200)
-        assert.ok(res.body.accessToken)
-        assert.ok(res.body.refreshToken)
+        assert.equal(response.status, 200)
+        assert.ok(response.body.accessToken)
+        assert.ok(response.body.refreshToken)
+
+        accessToken = response.body.accessToken
     })
 
 
-    it("GET /user get info from a valid token", async () => {
+    it("GET /user with a valid token", async () => {
         const response = await requestWithSupertest.get("/user-api/user")
             .set('Authorization', `Bearer ${accessToken}`)
 
@@ -96,7 +106,7 @@ describe("Test de l'application", function () {
         })
     })
 
-    it("GET /user get info from a invalid token", async () => {
+    it("GET /user with an invalid token", async () => {
         const response = await requestWithSupertest.get("/user-api/user")
             .set('Authorization', `Bearer ${"Not a token"}`)
 
@@ -104,47 +114,47 @@ describe("Test de l'application", function () {
         assert.deepEqual(response.body, { message: 'Invalid token' })
     })
 
-    it("PUT /booster get available free booster", async () => {
+    it("PUT /booster with 2 boosters", async () => {
         const response = await requestWithSupertest.put("/user-api/booster")
             .set('Authorization', `Bearer ${accessToken}`)
         assert.deepEqual(response.body, 2)
     })
 
-    it("PUT /booster/use with a user with 2 boosters", async () => {
+    it("PUT /booster/use with 2 boosters", async () => {
         const response = await requestWithSupertest.put("/user-api/booster/use")
             .set('Authorization', `Bearer ${accessToken}`)
         assert.equal(response.status, 200)
         assert.deepEqual(response.body, 1)
     })
-    it("PUT /booster/use with a user with 1 boosters", async () => {
+    it("PUT /booster/use with 1 boosters", async () => {
         const response = await requestWithSupertest.put("/user-api/booster/use")
             .set('Authorization', `Bearer ${accessToken}`)
         assert.equal(response.status, 200)
         assert.deepEqual(response.body, 0)
     })
 
-    it("PUT /booster/use with a user with 0 boosters", async () => {
+    it("PUT /booster/use with 0 boosters", async () => {
         const response = await requestWithSupertest.put("/user-api/booster/use")
             .set('Authorization', `Bearer ${accessToken}`)
         assert.equal(response.status, 400)
         assert.deepEqual(response.body, { message: 'No booster ready to be opened' })
     })
 
-    it("PUT /booster get available free booster", async () => {
+    it("PUT /booster with last booster opened < 12h", async () => {
         const response = await requestWithSupertest.put("/user-api/booster")
             .set('Authorization', `Bearer ${accessToken}`)
         assert.deepEqual(response.body, 0)
     })
 
 
-    it("GET /user/collection", async () => {
+    it("GET /user/collection with valid token", async () => {
         const response = await requestWithSupertest.get("/user-api/user/collection")
             .set('Authorization', `Bearer ${accessToken}`)
         assert.equal(response.status, 200)
         assert.deepEqual(response.body, [])
     })
 
-    it("PUT /addCard add valid array of id", async () => {
+    it("PUT /addCard with valid array of id", async () => {
         const response = await requestWithSupertest.put("/user-api/addCard")
             .set('Authorization', `Bearer ${accessToken}`)
             .send({ 'cards': [1, 2, 3] })
@@ -152,18 +162,25 @@ describe("Test de l'application", function () {
         assert.deepEqual(response.body, { message: 'Cards added' })
     })
 
-    it("GET /user/collection check collection of a valid user", async () => {
+    it("GET /user/collection with valid token", async () => {
         const response = await requestWithSupertest.get("/user-api/user/collection")
             .set('Authorization', `Bearer ${accessToken}`)
         assert.equal(response.status, 200)
         assert.deepEqual(response.body, [1, 2, 3])
     })
 
-    it("PUT /booster/buy/1 buy a booster", async () => {
+    it("PUT /booster/buy/1 with enough coins at price 1", async () => {
         const response = await requestWithSupertest.put("/user-api/booster/buy/1")
             .set('Authorization', `Bearer ${accessToken}`)
         assert.equal(response.status, 200)
         assert.deepEqual(response.body, { message: 'Booster bought successfully', coins: 9 })
+    })
+
+    it("PUT /booster/buy/100 with not enough coins at price 100", async () => {
+        const response = await requestWithSupertest.put("/user-api/booster/buy/100")
+            .set('Authorization', `Bearer ${accessToken}`)
+        assert.equal(response.status, 400)
+        assert.deepEqual(response.body, { message: 'The user does not have enough coins' })
     })
 
     it("PUT /user/sell-card/1 sell an existing card", async () => {
@@ -180,7 +197,7 @@ describe("Test de l'application", function () {
         assert.deepEqual(response.body, { message: 'The user does not have this card' })
     })
 
-    it("PUT /user/password should update user password", async () => {
+    it("PUT /user/password with valid token", async () => {
         const res = await requestWithSupertest.put("/user-api/user/password")
             .set('Authorization', `Bearer ${accessToken}`)
             .send({ currentPassword: "pass", newPassword: "newpass" })
@@ -189,7 +206,7 @@ describe("Test de l'application", function () {
         assert.deepEqual(res.body, { message: "Password updated" })
     })
 
-    it("POST /user/login login with an updated password", async () => {
+    it("POST /user/login with new password", async () => {
         const response = await requestWithSupertest.post("/user-api/user/login")
             .set('Content-type', 'application/json')
             .send({ name: 'JoJo', password: 'newpass' })
@@ -199,7 +216,7 @@ describe("Test de l'application", function () {
         assert.ok(response.body.refreshToken)
     })
 
-    it("PUT /user update the user name", async () => {
+    it("PUT /user with valid token", async () => {
         const res = await requestWithSupertest.put("/user-api/user")
             .set('Authorization', `Bearer ${accessToken}`)
             .send({ newName: "JoJoNew" })
@@ -212,7 +229,7 @@ describe("Test de l'application", function () {
         accessToken = res.body.accessToken
     })
 
-    it("GET /user get info from an updated token", async () => {
+    it("GET /user with the updated token", async () => {
         const response = await requestWithSupertest.get("/user-api/user")
             .set('Authorization', `Bearer ${accessToken}`)
 
@@ -227,14 +244,14 @@ describe("Test de l'application", function () {
         })
     })
 
-    it("DELETE /user delete the authenticated user", async () => {
-        const res = await requestWithSupertest.delete("/user-api/user")
+    it("DELETE /user with the valid token", async () => {
+        const response = await requestWithSupertest.delete("/user-api/user")
             .set('Authorization', `Bearer ${accessToken}`)
-        assert.equal(res.status, 200)
-        assert.deepEqual(res.body, { message: "User deleted" })
+        assert.equal(response.status, 200)
+        assert.deepEqual(response.body, { message: "User deleted" })
     })
 
-    it("POST /user/login login as a deleted user", async () => {
+    it("POST /user/login with a deleted user", async () => {
         const response = await requestWithSupertest.post("/user-api/user/login")
             .set('Content-type', 'application/json')
             .send({ name: 'JoJo', password: 'newpass' })
@@ -244,7 +261,7 @@ describe("Test de l'application", function () {
 
     })
 
-    it("DELETE /user delete an unexisting user", async () => {
+    it("DELETE /user with an unexisting user", async () => {
         const response = await requestWithSupertest.delete("/user-api/user")
             .set('Authorization', `Bearer ${accessToken}`);
         

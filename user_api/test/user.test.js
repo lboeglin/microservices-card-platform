@@ -4,7 +4,7 @@ import User from "../src/model/user.mjs"
 import assert from "node:assert"
 import { describe, it } from "node:test"
 
-describe('Invalid User', () => {
+describe('Test du model', () => {
   const now = Date.now()
 
   it("empty parameter", () => {
@@ -189,11 +189,6 @@ describe('Invalid User', () => {
       message: 'Invalid user object'
     })
   })
-})
-
-
-describe('Valid User', () => {
-  const now = Date.now()
 
   it('valid user with full properties', () => {
     const user = {
@@ -226,7 +221,6 @@ describe('Valid User', () => {
       name: 'name',
       password: 'password',
       salt: 'salt',
-      // missing coins, collection, boosters, lastBooster
     }
     assert.doesNotThrow(() => new User(user))
   })

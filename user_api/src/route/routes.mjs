@@ -353,7 +353,7 @@ router
             if (user.coins <= 0) {
                 return res.status(400).send({ message: "Coins cannot be 0 or less" })
             }
-            const price = req.params.price || 1
+            const price = req.params.price
             if (user.coins < price) {
                 return res.status(400).send({ message: "The user does not have enough coins" })
             }
