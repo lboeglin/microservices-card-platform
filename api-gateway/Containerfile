@@ -1,0 +1,9 @@
+FROM node:lts
+
+COPY . .
+
+RUN npm install
+
+EXPOSE 3940
+
+ENTRYPOINT [ "npm", "start" ]
