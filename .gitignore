@@ -1,4 +1,2 @@
-# IDE paths
-.idea/
-.vscode/
-**/node_modules/
+.idea
+/api-gateway/node_modules
