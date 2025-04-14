@@ -103,7 +103,7 @@ class User {
         // Default values
         obj.coins = obj.coins !== undefined ? obj.coins : 10;
         obj.collection = obj.collection !== undefined ? obj.collection : [];
-        obj.boosters = obj.boosters !== undefined && obj.boosters.length  < 1 ? obj.boosters : [now, now]; 
+        obj.boosters = obj.boosters !== undefined  ? obj.boosters : [now, now]; 
         obj.lastBooster = obj.lastBooster !== undefined ? obj.lastBooster : now;
 
 

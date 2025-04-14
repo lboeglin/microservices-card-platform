@@ -117,7 +117,7 @@ const userDAO = {
     try {
       const user = await userDAO.getUserByName(name)
       if (!user) {
-        return false
+        throw new Error("User not found")
       }
 
       await MongoUser.deleteOne({ name: name })
@@ -175,7 +175,7 @@ const userDAO = {
         throw new Error("No user found")
       }
 
-      if (!(cardId in user.collection)) {
+      if (!user.collection.includes(cardId)) {
         throw new Error(`The user does not have this card`)
       }
       
@@ -198,7 +198,7 @@ const userDAO = {
 
       const collection = user.collection
       cards.forEach(cardId => {
-        if (cardId in user.collection) {
+        if (user.collection.includes(cardId)) {
           user.coins += 1 // Same problem with the sell card, value is currently placeholder
         } else {
           collection.push(cardId)

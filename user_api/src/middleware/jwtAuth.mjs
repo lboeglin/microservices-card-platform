@@ -53,11 +53,11 @@ export function extractNameFromToken(req) {
     const token = authHeader && authHeader.split(' ')[1];
 
     if (!token) {
-        return null
+        throw new Error("Invalid token")
     }
     const decoded = jwt.decode(token)
     if (!decoded?.name) {
-        return null
+        throw new Error("Invalid token")
     }
     return decoded.name
 }

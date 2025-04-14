@@ -1,173 +1,233 @@
 'use strict'
 
-
 import User from "../src/model/user.mjs"
 import assert from "node:assert"
 import { describe, it } from "node:test"
 
 describe('Invalid User', () => {
-    let user = {}
-    it ("empty parameter", () => {
-        assert.throws(() => {new User(user)}, {
-            name: 'UserException',
-            message: 'Invalid user object'
-        })
+  const now = Date.now()
+
+  it("empty parameter", () => {
+    assert.throws(() => new User({}), {
+      name: 'UserException',
+      message: 'Invalid user object'
     })
-    let user2 = {
-        name: '',
-        password: 'password',
-        coins: 100,
-        collection: []
+  })
+
+  it("empty name", () => {
+    const user = {
+      name: '',
+      password: 'password',
+      salt: 'salt',
+      coins: 100,
+      collection: [],
+      boosters: [],
+      lastBooster: now
     }
-    it ("empty name", () => {
-        assert.throws(() => {new User(user2)}, {
-            name: 'UserException',
-            message: 'Name is required'
-        })
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Name is required'
     })
-    let user3 = {
-        name: 'name',
-        password: '',
-        coins: 100,
-        collection: []
+  })
+
+  it("empty password", () => {
+    const user = {
+      name: 'name',
+      password: '',
+      salt: 'salt',
+      coins: 100,
+      collection: [],
+      boosters: [],
+      lastBooster: now
     }
-    it ("empty password", () => {
-        assert.throws(() => {new User(user3)}, {
-            name: 'UserException',
-            message: 'Password is required'
-        })
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Password is required'
     })
-    let user4 = {
-        name: 'name',
-        password: 'password',
-        coins: -1,
-        collection: []
+  })
+
+  it("empty salt", () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: '',
+      coins: 100,
+      collection: [],
+      boosters: [],
+      lastBooster: now
     }
-    it ("negative coins", () => {
-        assert.throws(() => {new User(user4)}, {
-            name: 'UserException',
-            message: 'Coins must be a valid positive number'
-        })
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Salt is required'
     })
-    let user5 = {
-        name: 'name',
-        password: 'password',
-        coins: 100,
-        collection: ''
+  })
+
+  it("negative coins", () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      coins: -1,
+      collection: [],
+      boosters: [],
+      lastBooster: now
     }
-    it ("Collection not an array", () => {
-        assert.throws(() => {new User(user5)}, {
-            name: 'UserException',
-            message: 'Invalid user object'
-        })
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Coins must be a valid positive number'
     })
-    let user6 = {
-        name: 'name',
-        password: 'password',
-        coins: 100,
-        collection: [1, 2, 3]
+  })
+
+  it("NaN coins", () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      coins: NaN,
+      collection: [],
+      boosters: [],
+      lastBooster: now
     }
-    it ("Collection not an array of card IDs", () => {
-        assert.throws(() => {new User(user6)}, {
-            name: 'UserException',
-            message: 'Collection must be an array of card IDs'
-        })
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Coins must be a valid positive number'
     })
-    let user7 = {
-        name: 'name',
-        password: 'password',
-        coins: 100,
-        collection: ['1', '2', '3'],
-        something: 'else'
+  })
+
+  it("collection not an array", () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      coins: 100,
+      collection: 'not-an-array',
+      boosters: [],
+      lastBooster: now
     }
-    it ("Extra attribute", () => {
-        assert.throws(() => {new User(user7)}, {
-            name: 'UserException',
-            message: 'Invalid user object'
-        })
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Invalid user object'
     })
-    let user8 = {
-        name: 'name',
-        coins: 100
+  })
+
+  it("collection contains non-numbers", () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      coins: 100,
+      collection: ['a', 2, 3],
+      boosters: [],
+      lastBooster: now
     }
-    it ("Missing attribute", () => {
-        assert.throws(() => {new User(user8)}, {
-            name: 'UserException',
-            message: 'Invalid user object'
-        })
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Collection must be an array of numbers'
     })
-    let user9 = {
-        name: 'name',
-        password: 'password',
-        coins: NaN,
-        collection: ['1', '2', '3']
+  })
+
+  it("more than 2 boosters", () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      coins: 100,
+      collection: [],
+      boosters: [now, now, now],
+      lastBooster: now
     }
-    it ("NaN coins", () => {
-        assert.throws(() => {new User(user9)}, {
-            name: 'UserException',
-            message: 'Coins must be a valid positive number'
-        })
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Boosters array must contain at most 2 timestamps'
     })
+  })
+
+  it("invalid lastBooster timestamp", () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      coins: 100,
+      collection: [],
+      boosters: [],
+      lastBooster: NaN
+    }
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Timestamp must be a valid positive number'
+    })
+  })
+
+  it("extra attribute", () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      coins: 100,
+      collection: [],
+      boosters: [],
+      lastBooster: now,
+      extra: 'nope'
+    }
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Invalid user object'
+    })
+  })
+
+  it("missing attribute", () => {
+    const user = {
+      password: 'password',
+      salt: 'salt',
+      coins: 100,
+      collection: [],
+      boosters: [],
+      lastBooster: now
+    }
+    assert.throws(() => new User(user), {
+      name: 'UserException',
+      message: 'Invalid user object'
+    })
+  })
 })
 
-describe('Valid User', ()=>{
-    let user = {
-        name : 'name',
-        password : 'password',
-        coins : 100,
-        collection : ['1', '2', '3']
+
+describe('Valid User', () => {
+  const now = Date.now()
+
+  it('valid user with full properties', () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      coins: 100,
+      collection: [1, 2, 3],
+      boosters: [now],
+      lastBooster: now
     }
-    it('Valid user', ()=> {
-        assert.doesNotThrow(() => {new User(user), 'Creating a valid user should not throw an error'})
-    })
-    let user2 = {
-        name : 'name',
-        password : 'password',
-        coins : 100,
-        collection : []
+    assert.doesNotThrow(() => new User(user))
+  })
+
+  it('valid user with empty collection and boosters', () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      coins: 0,
+      collection: [],
+      boosters: [],
+      lastBooster: now
     }
-    it('Valid user with empty collection', ()=> {
-        assert.doesNotThrow(() => {new User(user2), 'Creating a valid user with empty collection should not throw an error'})
-    })
-    let user3 = {
-        name : 'name',
-        password : 'password',
-        coins : 0,
-        collection : ['1', '2', '3']
+    assert.doesNotThrow(() => new User(user))
+  })
+
+  it('valid user with default values for optional fields', () => {
+    const user = {
+      name: 'name',
+      password: 'password',
+      salt: 'salt',
+      // missing coins, collection, boosters, lastBooster
     }
-    it('Valid user with 0 coins', ()=> {
-        assert.doesNotThrow(() => {new User(user3), 'Creating a valid user with 0 coins should not throw an error'})
-    })
-    let user4 = {
-        name : 'name',
-        password : 'password',
-        coins : 0,
-        collection : []
-    }
-    it('Valid user with 0 coins and empty collection', ()=> {
-        assert.doesNotThrow(() => {new User(user4), 'Creating a valid user with 0 coins and empty collection should not throw an error'})
-    })
-    let user5 = {
-        name : 'name',
-        password : 'password',
-        coins : 100,
-    }
-    it('Valid user with default value for collection', ()=> {
-        assert.doesNotThrow(() => {new User(user5), 'Creating a valid user with default value for collection should not throw an error'})
-    })
-    let user6 = {
-        name : 'name',
-        password : 'password',
-        collection : ['1', '2', '3']
-    }
-    it('Valid user with default value for coins', ()=> {
-        assert.doesNotThrow(() => {new User(user6), 'Creating a valid user with default value for coins should not throw an error'})
-    })
-    let user7 = {
-        name : 'name',
-        password : 'password'
-    }
-    it('Valid user with default value for coins and collection', ()=> {
-        assert.doesNotThrow(() => {new User(user7), 'Creating a valid user with default value for coins and collection should not throw an error'})
-    })
+    assert.doesNotThrow(() => new User(user))
+  })
 })

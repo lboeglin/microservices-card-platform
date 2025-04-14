@@ -5,7 +5,7 @@
   "main": "server.mjs",
   "scripts": {
     "start": "node server.mjs",
-    "test": "clear; node --test --experimental-test-coverage --test-force-exit test/route.test.js"
+    "test": "clear; node --test --experimental-test-coverage --test-force-exit test/*.test.js"
   },
   "repository": {
     "type": "git",
