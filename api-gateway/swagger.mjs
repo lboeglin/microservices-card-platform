@@ -6,7 +6,7 @@ const config = {
     description: 'API Gateway Documentation',
   },
   tags :[ ],
-  host: 'localhost:8080/api/v0',
+  host: 'localhost:3940/api/v0',
   shemes: ['https', 'https'],
 };
 

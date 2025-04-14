@@ -5,12 +5,22 @@
     "description": "API Gateway Documentation",
     "version": "1.0.0"
   },
-  "host": "localhost:8080/api/v0",
+  "host": "localhost:3940/api/v0",
   "basePath": "/",
   "schemes": [
     "http"
   ],
   "paths": {
+    "/": {
+      "options": {
+        "description": "",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
     "/user/login": {
       "post": {
         "description": "Authenticate user and return JWT for further requests",
@@ -203,6 +213,11 @@
       "post": {
         "description": "Refresh JWT tokens using refresh token",
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
           {
             "name": "body",
             "in": "body",
