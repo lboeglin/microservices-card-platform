@@ -21,6 +21,7 @@
     "tailwindcss": "^4.0.17"
   },
   "devDependencies": {
-    "@iconify-json/flowbite": "^1.2.5"
+    "@iconify-json/flowbite": "^1.2.5",
+    "@iconify-json/svg-spinners": "^1.2.2"
   }
 }
