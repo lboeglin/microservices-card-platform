@@ -28,7 +28,6 @@ if (env == 'TEST') {
     await mongoose.connect(uri)
     console.log("Mongo on memory " + uri)
 } else {
-    console.log("Mongo full URL : " + mongoURL + '/' + mongoDB)
     await mongoose.connect(mongoURL + '/' + mongoDB)
     console.log("Mongo on " + mongoURL + '/' + mongoDB)
 }
@@ -38,7 +37,7 @@ const { default: app } = await import('./app.mjs')
 
 //lancement du serveur http
 const server = app.listen(serverPort, () =>
-    console.log(`app listening on port ${serverPort}\nAPI is running on http://127.0.0.1:${serverPort}${process.env.API_PATH}`)
+    console.log(`app listening on port ${serverPort}\nAPI is running on http://127.0.0.1:8080/user-api/doc`)
 )
 
 // Pour les interruptions utilisateur
