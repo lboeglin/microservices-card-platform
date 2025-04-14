@@ -222,8 +222,8 @@ router
             const username = extractNameFromToken(req)
             const cardId = req.params.id
             const result = await userController.sellCard(username, cardId)
-            if (result) {
-                return res.status(200).send({ message: "Card sold successfully" })
+            if (result != null) {
+                return res.status(200).send({ message: "Card sold successfully", coins: result })
             }
             res.status(400).send({ message: "Could not sell card" })
         } catch (error) {
@@ -292,7 +292,7 @@ router
                 let numberOfBooster = boosters.length
                 if (timeDifference >= twelveHours && numberOfBooster < 2) {
                     numberOfBooster = await userController.claimBooster(name, currentTime)
-                }
+                }               
                 return res.status(200).send(numberOfBooster)
             }
 
@@ -318,7 +318,7 @@ router
             }
 
             if (user.boosters.length < 1) {
-                return res.status(400).send({ message: "No booster ready to be oponed " })
+                return res.status(400).send({ message: "No booster ready to be opened" })
             }
 
             const result = await userController.useBooster(name)
@@ -342,7 +342,7 @@ router
             type: 'integer',
             description: 'Price of the booster to purchase'
         }
-        #swagger.description = 'Buys a booster using the user\'s coins.'
+        #swagger.description = 'Buys a booster using the user's coins.'
         */
         try {
             const name = extractNameFromToken(req)
@@ -353,14 +353,14 @@ router
             if (user.coins <= 0) {
                 return res.status(400).send({ message: "Coins cannot be 0 or less" })
             }
-            const price = req.params.price || 1
+            const price = req.params.price
             if (user.coins < price) {
                 return res.status(400).send({ message: "The user does not have enough coins" })
             }
 
             const result = await userController.buyBooster(name, price)
             if (result != null) {
-                return res.status(200).send({ message: "Booster bought successfully" })
+                return res.status(200).send({ message: "Booster bought successfully", coins: result.coins })
             }
             res.status(400).send({ message: "Failled to buy a booster" })
         } catch (error) {

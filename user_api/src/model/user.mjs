@@ -98,13 +98,13 @@ class User {
      */
     constructor(obj) {
 
-        const twelveHoursAgo = Date.now() - 12 * 60 * 60 * 1000; // 12 hours in milliseconds
+        const now = Date.now()
 
         // Default values
         obj.coins = obj.coins !== undefined ? obj.coins : 10;
         obj.collection = obj.collection !== undefined ? obj.collection : [];
-        obj.boosters = obj.boosters !== undefined && obj.boosters.length  > 0  ? obj.boosters : [twelveHoursAgo, twelveHoursAgo]; 
-        obj.lastBooster = obj.lastBooster !== undefined ? obj.lastBooster : Date.now();
+        obj.boosters = obj.boosters !== undefined  ? obj.boosters : [now, now]; 
+        obj.lastBooster = obj.lastBooster !== undefined ? obj.lastBooster : now;
 
 
         // Default values to hide protected values

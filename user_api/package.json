@@ -6,8 +6,7 @@
   "main": "server.mjs",
   "scripts": {
     "start": "node server.mjs",
-    "test": "node --test --experimental-test-coverage --test-force-exit",
-    "start-gendoc": "node ./swagger-autogen.js"
+    "test": "clear; node --test --experimental-test-coverage --test-force-exit test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -18,14 +17,17 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mongodb-memory-server": "^10.1.4",
     "mongoose": "^8.13.1",
-    "node-fetch": "^3.3.2",
+    "supertest": "^7.1.0",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "@types/express": "^5.0.1",
+    "@types/supertest": "^6.0.3",
     "@types/swagger-ui-express": "^4.1.8"
-  }
+  },
+  "type": "module"
 }
