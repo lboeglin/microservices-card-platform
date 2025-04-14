@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, afterEach } from 'node:test'
+import { describe, it, beforeEach, afterEach, before, after } from 'node:test'
 import assert from 'node:assert/strict'
 import createUserFetchDAO from '../api/dao/userFetchDAO.mjs'
 import fetch from 'node-fetch'
@@ -208,4 +208,99 @@ describe('userFetchDAO', () => {
             )
         })
     })
+
+    describe('userFetchDAO (integration test with real API)', () => {
+        const dao = createUserFetchDAO(fetch)
+        const testUsername = `integration_user` + Math.floor(Math.random() * 10000)
+        const testPassword = 'testpassword123'
+
+        let token = ''
+        let user = null
+
+        before(async () => {
+            // Register user
+            await dao.register({ name: testUsername, password: testPassword })
+
+            // Login and store token
+            const loginRes = await dao.login({ name: testUsername, password: testPassword })
+            token = loginRes.accessToken
+            user = loginRes
+        })
+
+        it('should get user info with token', async () => {
+            const fetched = await dao.getUser(token)
+            assert.equal(fetched.name, testUsername)
+            assert.ok(fetched.collection)
+        })
+
+        it('should update the username and return new tokens', async () => {
+            const newName = testUsername + '_updated_'
+        
+            const updatedResponse = await dao.updateUser(token, {newName: newName})
+        
+            assert.ok(updatedResponse.user, 'Missing user object')
+            assert.equal(updatedResponse.user.name, newName)
+        
+            assert.ok(updatedResponse.accessToken, 'Missing new access token')
+            assert.ok(updatedResponse.refreshToken, 'Missing refresh token')
+        
+            user = updatedResponse.user
+            token = updatedResponse.accessToken
+        })
+        
+
+        it('should return an empty collection array', async () => {
+            const result = await dao.getCollection(token)
+            assert.ok(Array.isArray(result))
+            assert.equal(result.length, 0)
+        })
+
+        it('should add a card to collection', async () => {
+            const added = await dao.addCard(token, { cards: [1, 2, 3, 4] })
+            assert.equal(added.message, 'Cards added')
+        })        
+
+        it('should return a collection with cards', async () => {
+            const result = await dao.getCollection(token)
+            assert.ok(Array.isArray(result))
+            assert.ok(result.length > 0)
+        })
+
+        it('should get a booster full', async () => {
+            const result = await dao.getBooster(token)
+            assert.strictEqual(result, 2)
+        })
+
+        it('should use a booster', async () => {
+            const result = await dao.useBooster(token)
+            assert.strictEqual(result, 1)
+        })
+
+        it('should get a booster -1', async () => {
+            const result = await dao.getBooster(token)
+            assert.strictEqual(result, 1)
+        })
+        
+        it('should buy a booster', async () => {
+            const result = await dao.buyBooster(token, 10)
+            assert.strictEqual(result.coins, 0)
+        })
+
+
+        it('should update password', async () => {
+            const result = await dao.updatePassword(token, { currentPassword: 'testpassword123', newPassword: 'newpass456' })
+            assert.equal(result.message, 'Password updated')
+        })
+
+        it('should delete user', async () => {
+            const result = await dao.deleteUser(token)
+            assert.equal(result.message, 'User deleted')
+        })
+
+        after(() => {
+            console.log(`Cleaned up test user ${testUsername}`)
+        })
+    })
 })
+
+

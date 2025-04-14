@@ -21,11 +21,10 @@ router.use('/user', (req, res, next) => {
 // Use the user and card routers
 router.use('/user', userRouter)
 
-// Default route
-router.get('/', (req, res) => {
-    res.status(200).json({
-        message: 'Welcome to the API Gateway'
+router
+    .route('/')
+    .options((req, res) => {
+        res.status(204)
     })
-})
 
 export default router
