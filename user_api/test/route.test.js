@@ -43,12 +43,12 @@ describe("Test de l'application", function () {
         assert.deepEqual(response.body, { message: "Username already taken or failed to register" })
     })
 
-    it("POST /user/register with invalid argumetn", async () => {
-        const response = await requestWithSupertest.post("/user-api/use/register")
+    it("POST /user/register with invalid argument", async () => {
+        const response = await requestWithSupertest.post("/user-api/user/register")
             .set('Content-type', 'application/json')
             .send({ wrong: 'JoJo',value: 'pass' })
         assert.equal(response.status, 400)
-        assert.deepEqual(response, { message: 'Username and password are required'})
+        assert.deepEqual(response.body, { message: 'Username and password are required'})
     })
 
     it("POST /user/login login as a valid user", async () => {
