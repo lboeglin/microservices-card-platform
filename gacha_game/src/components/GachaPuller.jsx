@@ -26,12 +26,11 @@ export default function GachaPuller({ cards }) {
                         onClick={() => { setCurrentCard(currentCard + 1) }}
                     />
                     <p className="text-black/75">Cliquez sur la carte pour continuer</p>
-                <Button
-                    action="/gacha"
-                    className="absolute top-4 right-4"
-                    onClick={skipPull}>
-                    Passer l'animation
-                </Button>
+                    <Button
+                        action={skipPull}
+                        className="absolute top-4 right-4" >
+                        Passer l'animation
+                    </Button>
                 </div>
             )
         else
