@@ -52,7 +52,7 @@ export const getInventory = async (token) => {
 }
 
 export const claimBooster = async (token) => {
-	const response = await fetch(HOST + '/user/booster/use', {
+	const response = await fetch(HOST + '/user/booster', {
 		method: 'PUT',
 		headers: {
 			'Accept': 'application/json',
@@ -68,6 +68,20 @@ export const claimBooster = async (token) => {
 // do the gacha roll
 export const openBooster = async (token) => {
 	const response = await fetch(HOST + '/user/booster/use', {
+		method: 'PUT',
+		headers: {
+			'Accept': 'application/json',
+			'Authorization': `Bearer ${token}`
+		}
+	})
+	if (response.ok) {
+		return await response.json()
+	}
+	return null
+}
+
+export const buyBooster = async (token) => {
+	const response = await fetch(HOST + '/user/booster/buy/1', {
 		method: 'PUT',
 		headers: {
 			'Accept': 'application/json',

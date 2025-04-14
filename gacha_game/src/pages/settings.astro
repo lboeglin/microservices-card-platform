@@ -1,0 +1,56 @@
+---
+import Button from "../components/Button";
+import BasePage from "../layouts/BasePage.astro";
+---
+
+<BasePage>
+	<h1 class="text-6xl mb-2 font-black drop-shadow-md">Paramètres</h1>
+	<div class="bg-blue-950/55 p-4">
+		<div class="*:inline">
+			<Button variant="dangerous">Supprimer</Button><span class="ml-3"
+				>le compte</span
+			>
+		</div>
+		<dialog
+			class="left-0 top-0 m-auto w-full h-full absolute bg-neutral-900/40"
+			open
+		>
+			<div
+				class="left-0 right-0 top-0 bottom-0 absolute h-fit m-auto flex flex-col gap-4 py-6 px-8 w-100 rounded-2xl text-cyan-950 bg-blue-300/35 backdrop-blur-lg border border-cyan-950/70"
+			>
+				<div>
+					<h1 class="text-3xl font-bold">
+						Êtez-vous sûr que vous voulez supprimer votre compte ?
+					</h1>
+				</div>
+				<form class="flex flex-col gap-2" action="delete-account">
+					<label for="username">Nom d'utilisateur</label>
+					<input
+						class="bg-blue-300 placeholder:text-cyan-800/80 rounded-full py-1 px-4"
+						type="text"
+						name="name"
+						placeholder="username39"
+						id="login-username"
+						required
+					/>
+					<label for="password">Mot de passe</label>
+					<input
+						class="bg-blue-300 placeholder:text-cyan-800/80 rounded-full py-1 px-4"
+						type="password"
+						name="password"
+						placeholder="very_securePa$$w0rd"
+						id="login-password"
+						required
+					/>
+					<input
+						class="bg-gradient-to-r from-blue-300 to-fuchsia-300 hover:from-teal-700 hover:to-sky-800 hover:text-amber-50 transition-colors rounded-2xl w-fit self-center p-3 mt-2 border border-emerald-700/30 hover:border-b-blue-300/70 cursor-pointer"
+						type="submit"
+						name="submit"
+						value="Se Connecter"
+						id="login-submit"
+					/>
+				</form>
+			</div>
+		</dialog>
+	</div>
+</BasePage>

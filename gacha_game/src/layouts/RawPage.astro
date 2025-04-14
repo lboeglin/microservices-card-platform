@@ -1,0 +1,15 @@
+---
+import Layout from "./Layout.astro";
+import { Image } from "astro:assets";
+import background from "../../public/background.png";
+---
+
+<Layout>
+	<Image
+		class="-z-50 fixed w-screen h-screen object-cover"
+		loading="eager"
+		src={background}
+		alt=""
+	/>
+	<slot />
+</Layout>

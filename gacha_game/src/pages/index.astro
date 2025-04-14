@@ -1,7 +1,10 @@
 ---
 import BasePage from "../layouts/BasePage.astro";
 import Button from "../components/Button";
-import { getUser, login } from "../util/serverRequests.js";
+import { getUser } from "../util/serverRequests.js";
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import cat from "../../public/cat.jpg";
 
 if (!Astro.cookies.has("authorization")) {
 	return Astro.redirect("/login");
@@ -19,8 +22,52 @@ const user = userInfo.name;
 ---
 
 <BasePage>
-	<h1 class="text-3xl font-black drop-shadow-lg">Hello {user} !</h1>
-	<Button href="/inventory">Inventory</Button>
-	<Button href="/gacha" variant="golden">Gacha</Button>
-	<Button href="/logout">Se Déconnecter</Button>
+	<div
+		class="flex flex-row gap-2 p-2 bg-blue-300 border border-blue-100 rounded-3xl w-fit mb-2 text-2xl"
+	>
+		<Button title="Déconnexion" variant="dangerous" action="/logout"
+			><Icon name="flowbite:arrow-left-to-bracket-outline" /></Button
+		>
+		<Button title="Paramètres" action="/settings"
+			><Icon name="flowbite:cog-outline" width="24" height="24" /></Button
+		>
+	</div>
+	<div class="bg-blue-950/35 w-fit p-4 rounded-4xl">
+		<h1 class="text-6xl font-black drop-shadow-md">Bonjour {user} !</h1>
+		<p class="text-3xl">
+			Vous avez <span
+				class="bg-gradient-to-tr from-yellow-500 to-amber-300 text-amber-900 rounded px-1 border border-amber-100"
+				>{userInfo.coins}$</span
+			>
+		</p>
+	</div>
+	<a href="/inventory">
+		<div
+			class="relative w-full h-64 my-2 p-8 rounded-4xl overflow-clip flex flex-col justify-center items-center text-center hover:*:scale-120 *:transition-transform"
+		>
+			<h1 class="text-4xl font-black drop-shadow-md">Inventaire</h1>
+			<b>Admirez votre collection de cartes Catcha en toute sa splendeur !</b>
+			<Image
+				src={cat}
+				alt=""
+				class="absolute top-0 left-0 w-full h-full object-cover blur brightness-50 -z-10"
+			/>
+		</div>
+	</a>
+	<a href="/gacha">
+		<div
+			class="relative w-full h-64 my-2 p-8 rounded-4xl overflow-clip flex flex-col justify-center items-center text-center hover:*:scale-120 *:transition-transform"
+		>
+			<h1 class="text-4xl font-black drop-shadow-md">Gacha</h1>
+			<b
+				>Obtenez des cartes nouvelles et exclusives, et agrandissez votre
+				collection fulgurante !</b
+			>
+			<Image
+				src={cat}
+				alt=""
+				class="absolute top-0 left-0 w-full h-full object-cover blur brightness-50 -z-10"
+			/>
+		</div>
+	</a>
 </BasePage>
