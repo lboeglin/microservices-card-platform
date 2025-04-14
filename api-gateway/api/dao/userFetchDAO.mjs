@@ -59,9 +59,9 @@ const userFetchDAO = (fetch) => ({
         return doPost(url, userData, fetch)
     },
 
-    refreshTokens: async (refreshTokenData) => {
+    refreshTokens: async (jwt, refreshToken) => {
         const url = new URL(`${urlBase}/user/refresh-tokens`)
-        return doPost(url, refreshTokenData, fetch)
+        return doAuthPost(url, refreshToken, null, fetch)
     },
 
     getUser: async (jwt) => {
@@ -223,6 +223,33 @@ async function handleResponse(response) {
     }
     const data = await response.json()
     return data
+}
+
+/**
+ * Helper to send an authenticated POST request.
+ * 
+ * @param {URL} url - The endpoint URL.
+ * @param {string} token - The Bearer token.
+ * @param {Object|null} body - The JSON payload or null.
+ * @param {typeof fetch} fetch - The fetch implementation.
+ * @returns {Promise<Object>} The parsed JSON response.
+ */
+async function doAuthPost(url, token, body = null, fetch) {
+    try {
+        const response = await fetch(url.toString(), {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: body ? JSON.stringify(body) : null,
+            agent: agent || undefined
+        })
+        return await handleResponse(response)
+    } catch (err) {
+        console.error('Error during POST:', err)
+        throw err
+    }
 }
 
 export default userFetchDAO
