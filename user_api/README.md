@@ -125,7 +125,6 @@ Le service expose plusieurs routes, regroupées sous le préfixe `/user`. Ces ro
      node user-api/server.mjs & disown
      ```
 
----
 
 ### Déploiement avec Podman (utilisant un fichier `Containerfile`)
 
@@ -163,33 +162,15 @@ Les tests sont organisés en plusieurs catégories, chacune ciblant un aspect sp
 
 - **Tests d'intégration du routage** :  
   Ces tests vérifient que les routes de l'application fonctionnent comme prévu. Par exemple, ils s'assurent que l'inscription d'un utilisateur (`register`), la récupération des informations utilisateur (`getUserByName`), ainsi que la mise à jour de l'utilisateur (`updateName`, `updatePassword`) se passent sans problème.
-  
-  Exemple :  
-  - Vérification que l'utilisateur peut s'inscrire avec un nom unique et un mot de passe valide.
-  - Vérification que la mise à jour du nom d'utilisateur se fait correctement.
-  - Vérification que la récupération des informations utilisateur retourne bien les bonnes données.
 
 - **Tests d'authentification** :  
   Ces tests garantissent que les mécanismes d'authentification fonctionnent correctement. Par exemple, la connexion d'un utilisateur avec des identifiants corrects ou incorrects, ainsi que la gestion des erreurs liées à l'authentification (comme un mot de passe incorrect).
-  
-  Exemple :  
-  - Vérification que la connexion avec un nom d'utilisateur et un mot de passe correct fonctionne.
-  - Vérification que la connexion échoue avec un mot de passe incorrect.
 
 - **Tests de gestion des utilisateurs** :  
   Ces tests vérifient les différentes fonctionnalités liées à la gestion des utilisateurs, comme la suppression d'un utilisateur (`deleteUser`), l'ajout de cartes à la collection d'un utilisateur (`addCards`), la vente de cartes (`sellCard`), ainsi que l'achat de boosters (`buyBooster`).
   
-  Exemple :  
-  - Vérification que l'utilisateur peut ajouter des cartes à sa collection.
-  - Vérification que la vente d'une carte augmente les coins de l'utilisateur et supprime la carte de la collection.
-  - Vérification que l'achat d'un booster réduit le nombre de coins de l'utilisateur.
-
 - **Tests de sécurité** :  
   Ces tests vérifient que l'application gère correctement les cas d'erreur et protège les données sensibles. Par exemple, la tentative de suppression ou de mise à jour des informations utilisateur avec des informations erronées (comme un nom d'utilisateur déjà existant ou un mot de passe incorrect).
-  
-  Exemple :  
-  - Vérification que l'utilisateur ne peut pas modifier son mot de passe avec un mot de passe actuel incorrect.
-  - Vérification que la tentative de vente d'une carte que l'utilisateur ne possède pas échoue.
 
 ### Lancer les tests
 
@@ -202,4 +183,3 @@ npm test
 Cela exécutera tous les tests définis et affichera les résultats dans la console, vous permettant ainsi de valider le bon fonctionnement des différents composants de l'application. Les tests couvrent les fonctionnalités essentielles, comme l'inscription, la connexion, la gestion des utilisateurs, l'ajout de cartes, la vente de cartes, et l'achat de boosters.
 
 
-Cela correspond désormais à la structure et aux tests que vous avez partagés.
