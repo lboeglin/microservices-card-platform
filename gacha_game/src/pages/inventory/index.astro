@@ -1,49 +1,28 @@
 ---
-import Button from "../../components/Button.astro";
-import Card, { Rarity } from "../../components/Card";
+import Button from "../../components/Button";
+import Card from "../../components/Card";
+import Inventory from "../../components/Inventory";
 import BasePage from "../../layouts/BasePage.astro";
+import { getInventory } from "../../util/serverRequests.js";
+import { Icon } from "astro-icon/components";
 
-const cards = [
-	{
-		name: "Ichika",
-		artwork:
-			"https://static.wikitide.net/projectsekaiwiki/1/17/Charsel-ichika.png",
-		rarity: Rarity.SUPER_RARE,
-	},
-	{
-		name: "Saki",
-		artwork:
-			"https://static.wikitide.net/projectsekaiwiki/9/9e/Charsel-saki.png",
-		rarity: Rarity.SUPER_RARE,
-	},
-	{
-		name: "Shiho",
-		artwork:
-			"https://static.wikitide.net/projectsekaiwiki/7/79/Charsel-shiho.png",
-		rarity: Rarity.SUPER_RARE,
-	},
-	{
-		name: "Honami",
-		artwork:
-			"https://static.wikitide.net/projectsekaiwiki/1/19/Charsel-honami.png",
-		rarity: Rarity.SUPER_RARE,
-	},
-];
+if (!Astro.cookies.has("authorization")) {
+	return Astro.redirect("/login");
+}
+
+const cards = await getInventory(
+	Astro.cookies.get("authorization")?.json().accessToken,
+);
+
+if (!cards) {
+	return Astro.redirect("/login");
+}
 ---
 
 <BasePage>
-	<Button href="/">Return to monke</Button>
-	<h1 class="font-black text-4xl mb-4 drop-shadow-lg">Inventaire</h1>
-	<div class="flex flex-wrap w-full gap-2">
-		{
-			cards.map((card) => (
-				<Card
-					client:visible
-					name={card.name}
-					artwork={card.artwork}
-					rarity={card.rarity}
-				/>
-			))
-		}
+	<div class="text-4xl sticky top-2 left-2 z-40">
+		<Button action="/"><Icon name="flowbite:arrow-left-outline" /></Button>
 	</div>
+	<h1 class="font-black text-6xl mb-4 drop-shadow-md">Inventaire</h1>
+	<Inventory cards={cards} client:load />
 </BasePage>

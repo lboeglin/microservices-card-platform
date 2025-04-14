@@ -5,11 +5,21 @@ import react from '@astrojs/react';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import node from '@astrojs/node';
+
+import icon from 'astro-icon';
+
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react()],
+  integrations: [react(), icon()],
 
   vite: {
     plugins: [tailwindcss()]
-  }
+  },
+
+  output: 'server',
+
+  adapter: node({
+    mode: 'standalone'
+  })
 });

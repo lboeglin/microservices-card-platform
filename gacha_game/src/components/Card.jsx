@@ -35,7 +35,7 @@ export default ({ name = 'Unnamed', rarity = Rarity.COMMON, artwork = '', goofy 
 			}}
 			onMouseLeave={(e) => { setTilt({ x: 0, y: 0 }) }}
 			className={"relative bg-blue-400 text-white text-center rounded flex flex-col hover:z-10 ease-out duration-400 transition-all hover:scale-[1.10]"}>
-			<img className="object-cover object-top w-full h-full rounded" src={artwork} />
+			<img className="object-cover object-top w-full h-full rounded" src={artwork} width={width} height={height} alt="" loading="lazy" />
 			<div className="absolute left-0 bottom-0 backdrop-blur-lg rounded-b bg-slate-800/75 text-center w-full p-2">
 				<h1 className="font-bold">
 					{name}

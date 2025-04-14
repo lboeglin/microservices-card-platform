@@ -1,8 +1,70 @@
 ---
-import Pull from "../../components/Pull"
+import Button from "../../components/Button";
 import BasePage from "../../layouts/BasePage.astro";
+import { claimBooster } from "../../util/serverRequests";
+import { Icon } from "astro-icon/components";
+
+if (!Astro.cookies.has("authorization")) {
+    return Astro.redirect("/login");
+}
+
+const boostersAvailable = await claimBooster(
+    Astro.cookies.get("authorization")?.json().accessToken,
+);
+
+if (boostersAvailable === null) {
+    return Astro.redirect("/login");
+}
 ---
 
 <BasePage>
-    <Pull client:load/>
+    <div class="absolute top-2 left-2 text-4xl">
+        <Button action="/">
+            <Icon name="flowbite:arrow-left-outline" />
+        </Button>
+    </div>
+    <div
+        class="flex flex-col p-10 justify-between h-[95vh] items-center rounded-4xl overflow-hidden"
+        style="background-image: url(/gacha_banner.jpg); background-size: cover; background-position: center;"
+    >
+        <div class="rounded p-4 bg-black/50">
+            <h1 class="text-8xl drop-shadow-md">
+                <b>Cat</b>astrophe de mignonitude
+            </h1>
+            <p>Bannière exclusive de cartes de type chat !</p>
+        </div>
+        <div class="flex gap-4">
+            <Button variant="golden" action="/gacha/pull-buy">
+                Acheter un booster (<b>4</b>$)
+            </Button>
+            <Button variant="golden" action="/gacha/pull-booster"
+                >Pull (<b>{boostersAvailable}</b> disponibles)</Button
+            >
+        </div>
+        <div
+            id="loading-scrim"
+            style="visibility: hidden;"
+            class="absolute flex flex-col-reverse justify-center items-center bg-neutral-900/40 w-full h-full top-0 left-0"
+        >
+            <p>Chargement...</p>
+            <Icon class="size-32" name="svg-spinners:pulse-multiple" />
+        </div>
+    </div>
+    <script is:inline>
+        const loading = (event) => {
+            const originalLoader = event.loader;
+            event.loader = async function () {
+                document.getElementById("loading-scrim").style =
+                    "visibility: visible";
+                await originalLoader();
+                document.getElementById("loading-scrim").style =
+                    "visibility: hidden";
+                document.removeEventListener(
+                    "astro:before-preparation",
+                    loading,
+                );
+            };
+        };
+        document.addEventListener("astro:before-preparation", loading);
+    </script>
 </BasePage>
