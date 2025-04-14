@@ -64,20 +64,6 @@ Assurez-vous d'avoir les outils suivants installés sur votre machine :
    npm install
    ```
 
-3. **Démarrer l'application** :
-
-   Une fois les dépendances installées, vous pouvez démarrer le backend et le frontend de l'application :
-
-   - Pour démarrer le serveur backend :
-     ```bash
-     npm run start
-     ```
-
-   - Pour démarrer le frontend (si nécessaire) :
-     ```bash
-     npm start
-     ```
-
    Le backend sera disponible sur le port `3939` et le frontend sera disponible sur le port `3000` par défaut.
 
 ## Déploiement
